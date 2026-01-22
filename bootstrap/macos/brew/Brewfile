@@ -43,7 +43,6 @@ brew "watch"
 brew "wget"
 brew "shellcheck"
 brew "bash"
-brew "1password-cli"
 
 # -------------------------------------------------------------------
 # Must have GUI applications (macOS only)
@@ -51,5 +50,6 @@ brew "1password-cli"
 
 cask "google-chrome"
 cask "1password"
+cask "1password-cli"
 cask "sublime-text"
 cask "raycast"
