@@ -63,14 +63,28 @@ esac
 # -------------------------------------------------------------------
 # Prompt for repo
 # -------------------------------------------------------------------
-info "Enter the full Git repository URL (HTTPS or SSH)"
+info "Enter your GitHub username OR full repository URL"
 info "Examples:"
-info "  https://github.com/jorks/dotfiles.git"
-info "  git@github.com:jorks/dotfiles.git"
+info "  jorks                               → https://github.com/jorks/dotfiles.git"
+info "  https://github.com/jorks/dotfiles  → https://github.com/jorks/dotfiles.git"
+info "  git@github.com:jorks/dotfiles      → git@github.com:jorks/dotfiles.git"
 echo
 
-read -r -p "Dotfiles git repo URL: " REPO_URL
-[[ -n "$REPO_URL" ]] || fatal "Repo URL is required"
+read -r -p "GitHub username or repo URL: " REPO_INPUT
+[[ -n "$REPO_INPUT" ]] || fatal "Repository input is required"
+
+# Auto-detect: username vs URL
+if [[ "$REPO_INPUT" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+  # Looks like a username - construct GitHub URL
+  REPO_URL="https://github.com/${REPO_INPUT}/dotfiles.git"
+  info "Using repository: $REPO_URL"
+elif [[ "$REPO_INPUT" =~ ^git@ ]]; then
+  # SSH URL - normalize .git extension
+  REPO_URL="${REPO_INPUT%.git}.git"
+else
+  # HTTPS URL - normalize .git extension
+  REPO_URL="${REPO_INPUT%.git}.git"
+fi
 
 read -r -p "Target directory [$DEFAULT_TARGET]: " TARGET_DIR
 TARGET_DIR="${TARGET_DIR:-$DEFAULT_TARGET}"
@@ -85,6 +99,8 @@ echo
 # -------------------------------------------------------------------
 if [[ -d "$TARGET_DIR/.git" ]]; then
   info "Using existing repo at $TARGET_DIR"
+  info "Pulling latest changes"
+  git -C "$TARGET_DIR" pull origin "$BRANCH"
 else
   info "Cloning repo into $TARGET_DIR"
   git clone --branch "$BRANCH" "$REPO_URL" "$TARGET_DIR"
