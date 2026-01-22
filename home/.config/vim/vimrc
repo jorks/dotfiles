@@ -1,0 +1,74 @@
+" ~/.config/vim/vimrc
+"
+" PURPOSE
+" -------
+" Minimal, portable Vim configuration.
+"
+" This file is intentionally small and conservative.
+" It aims to improve usability and readability without
+" requiring deep Vim knowledge or plugins.
+"
+" Design goals:
+" - Works with default Vim on macOS and Linux
+" - Safe for remote servers and emergency edits
+" - No plugins, no dependencies, no surprises
+"
+" Vim will automatically load this file when located at:
+" ~/.config/vim/vimrc (XDG-compatible path)
+
+" -------------------------------------------------------------------
+" Basic behaviour
+" -------------------------------------------------------------------
+
+set nocompatible          " disable legacy vi compatibility mode
+set hidden                " allow switching buffers without saving
+set encoding=utf-8        " use UTF-8 internally
+
+" -------------------------------------------------------------------
+" UI and readability
+" -------------------------------------------------------------------
+
+set number                " show absolute line numbers
+set relativenumber        " show relative line numbers for easy movement
+set cursorline            " highlight the current line
+set scrolloff=5           " keep 5 lines visible above/below the cursor
+set wrap                  " wrap long lines instead of truncating
+set linebreak             " wrap at word boundaries (not mid-word)
+
+" -------------------------------------------------------------------
+" Searching
+" -------------------------------------------------------------------
+
+set ignorecase             " case-insensitive search by default
+set smartcase              " become case-sensitive if search contains capitals
+set incsearch              " show matches as you type
+set hlsearch               " highlight all search matches
+
+nnoremap <Esc><Esc> :nohlsearch<CR>   " double-Esc clears search highlighting
+
+" -------------------------------------------------------------------
+" Indentation and editing
+" -------------------------------------------------------------------
+
+set expandtab              " convert tabs to spaces
+set tabstop=2              " display width of a tab character
+set shiftwidth=2           " number of spaces for auto-indent
+set smartindent            " basic automatic indentation for code
+set autoindent             " copy indentation from current line
+set backspace=indent,eol,start " make backspace behave like modern editors
+
+" -------------------------------------------------------------------
+" Quality of life
+" -------------------------------------------------------------------
+
+set clipboard=unnamedplus  " use system clipboard when available
+set wildmenu               " enable tab-completion menu in command mode
+set wildmode=longest:full,full " improve command-line completion behaviour
+
+" -------------------------------------------------------------------
+" File handling
+" -------------------------------------------------------------------
+
+set noswapfile             " do not create .swp files
+set nobackup               " do not create backup files
+set nowritebackup          " prevent temporary backup files on save

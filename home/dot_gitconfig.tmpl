@@ -1,0 +1,124 @@
+# ~/.gitconfig
+#
+# PURPOSE
+# -------
+# Shared Git configuration.
+#
+# This file:
+# - Contains portable settings used across macOS and Linux
+# - Excludes identity- and machine-specific configuration
+#
+# Notes:
+# - Identity-specific settings live in ~/.gitconfig.local
+# - Values wrapped in {{ }} are prompted by chezmoi at apply time
+
+# -------------------------------------------------------------------
+# Identity (name/email only)
+# -------------------------------------------------------------------
+
+[user]
+  name = {{ .git_name }}
+  email = {{ .git_email }}
+
+# -------------------------------------------------------------------
+# Core behaviour
+# -------------------------------------------------------------------
+
+[core]
+  editor = {{ .editor }}
+  excludesfile = ~/.gitignore_global
+  attributesfile = ~/.gitattributes
+  pager = delta
+
+[color]
+  ui = auto
+
+# -------------------------------------------------------------------
+# Defaults & safety
+# -------------------------------------------------------------------
+
+[init]
+  defaultBranch = main
+
+[fetch]
+  prune = true
+  pruneTags = true
+
+[pull]
+  rebase = false
+
+[push]
+  default = simple
+  autoSetupRemote = true
+
+[rebase]
+  autoStash = true
+
+# -------------------------------------------------------------------
+# Diff improvements
+# -------------------------------------------------------------------
+
+[diff]
+  algorithm = histogram
+  colorMoved = default
+  tool = vimdiff
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  features = side-by-side line-numbers decorations
+  syntax-theme = default
+  navigate = true
+
+[difftool]
+  prompt = false
+
+[difftool "vimdiff"]
+  cmd = vimdiff "$LOCAL" "$REMOTE"
+
+# -------------------------------------------------------------------
+# Aliases (high-signal only)
+# -------------------------------------------------------------------
+
+[alias]
+  st = status -sb
+  co = checkout
+  br = branch
+  lg = log --oneline --decorate --graph --all
+  last = log -1 HEAD
+
+# -------------------------------------------------------------------
+# Git LFS (safe everywhere)
+# -------------------------------------------------------------------
+
+[filter "lfs"]
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f
+
+{{- if eq .chezmoi.os "darwin" }}
+
+# -------------------------------------------------------------------
+# macOS: SSH commit signing via 1Password
+# -------------------------------------------------------------------
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+  allowedSignersFile = ~/.ssh/allowed_signers
+
+[commit]
+  gpgsign = true
+
+{{- end }}
+
+# -------------------------------------------------------------------
+# Optional local overrides (NOT in git)
+# -------------------------------------------------------------------
+
+[include]
+  path = ~/.gitconfig.local

@@ -1,0 +1,47 @@
+# -------------------------------------------------------------------
+# Chezmoi data & prompts
+#
+# This file defines user-facing prompts and shared data used by chezmoi templates.
+#
+# Design principles:
+# - This file is version-controlled and lives at the repo root
+# - It defines *what* data is required, not *where* it is used
+# - Values are prompted for once on first apply, then stored locally by chezmoi
+# - Local answers are written to:
+#     ~/.config/chezmoi/chezmoi.toml
+#
+# This allows the repo to stay generic and reusable, while keeping
+# user-specific values out of version control.
+#
+# Dotfiles reference these values via templates, for example:
+#   {{ .git_name }}
+#   {{ .editor }}
+#
+# -------------------------------------------------------------------
+
+# -------------------------------------------------------------------
+# Identity (no defaults)
+#
+# These values are intentionally prompted for with no defaults.
+# They are personal, machine-independent, and should be explicit.
+# -------------------------------------------------------------------
+
+[data.git_name]
+type = "string"
+prompt = "Git name (Tom Smith)"
+
+[data.git_email]
+type = "string"
+prompt = "Git email (tsmith@users.noreply.github.com)"
+
+# -------------------------------------------------------------------
+# Preferences (safe defaults)
+#
+# These values have sensible defaults so pressing Enter is acceptable.
+# Users can still override them during the first apply if desired.
+# -------------------------------------------------------------------
+
+[data.editor]
+type = "string"
+prompt = "Preferred editor"
+default = "nano"

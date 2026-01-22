@@ -1,0 +1,79 @@
+# ~/.gitattributes
+#
+# PURPOSE
+# -------
+# Define how git treats files in the working tree and repository.
+#
+# This file is about:
+# - Line ending normalisation
+# - Text vs binary handling
+# - Cleaner diffs and merges
+#
+# It is NOT about:
+# - Code formatting
+# - Editor behaviour
+# - Linting rules
+#
+# This file is used globally via:
+#   git config --global core.attributesfile ~/.gitattributes
+#
+# Project-level .gitattributes files will override this.
+
+# -------------------------------------------------------------------
+# Line ending normalisation
+# -------------------------------------------------------------------
+# Treat files as text by default and normalise to LF in the repo.
+# Prevents CRLF/LF churn across macOS, Linux, and Windows.
+* text=auto eol=lf
+
+# -------------------------------------------------------------------
+# Common text / config formats
+# -------------------------------------------------------------------
+# Explicitly mark common config and data formats as text
+# to ensure predictable diffs and merges.
+*.txt       text
+*.md        text
+*.yml       text
+*.yaml      text
+*.toml      text
+*.json      text
+*.xml       text
+
+# -------------------------------------------------------------------
+# Shell scripts
+# -------------------------------------------------------------------
+# Shell scripts must remain LF to execute correctly.
+*.sh        text
+*.bash      text
+*.zsh       text
+
+# -------------------------------------------------------------------
+# Programming languages
+# -------------------------------------------------------------------
+# Mark source files as text to avoid platform-specific surprises.
+*.py        text
+*.php       text
+*.js        text
+*.css       text
+*.html      text
+
+# -------------------------------------------------------------------
+# Infrastructure as Code
+# -------------------------------------------------------------------
+# Infra files benefit heavily from clean diffs.
+*.tf        text
+*.tfvars    text
+*.tpl       text
+
+# -------------------------------------------------------------------
+# Binary files
+# -------------------------------------------------------------------
+# Prevent git from attempting to diff or merge binary formats.
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.pdf       binary
+*.zip       binary
+*.gz        binary

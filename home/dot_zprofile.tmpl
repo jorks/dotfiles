@@ -1,0 +1,70 @@
+# ~/.zprofile
+#
+# PURPOSE
+# -------
+# Loaded ONCE for each login shell.
+# Use this file to define environment variables and PATH.
+#
+# Runs for:
+# - Terminal / iTerm login shells
+# - SSH sessions
+#
+# Does NOT run for:
+# - Every new tab
+# - Non-interactive shells
+#
+# Rule of thumb:
+# - If it affects tools (git, editors, brew) → put it here
+# - If it should not run repeatedly → put it here
+
+# -------------------------------------------------------------------
+# PATH setup (prepend only - never reset)
+# -------------------------------------------------------------------
+
+# User-controlled binaries should always win
+export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+
+# -------------------------------------------------------------------
+# macOS-specific environment
+# -------------------------------------------------------------------
+if [[ "$(uname)" == "Darwin" ]]; then
+  # Homebrew
+  #
+  # This sets:
+  # - PATH (/opt/homebrew/bin, sbin)
+  # - MANPATH
+  # - INFOPATH
+  #
+  # This is the supported way to initialise Homebrew on Apple Silicon.
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+
+  # JetBrains Toolbox
+  #
+  # Allows running IDEs (idea, goland, etc.) from the CLI.
+  # Kept LAST so it never overrides system or brew tools.
+  if [[ -d "$HOME/Library/Application Support/JetBrains/Toolbox/scripts" ]]; then
+    export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+  fi
+fi
+
+# -------------------------------------------------------------------
+# Linux-specific environment
+# -------------------------------------------------------------------
+if [[ "$(uname)" == "Linux" ]]; then
+  # Common locations for user-installed binaries on servers
+  export PATH="/usr/local/sbin:/usr/local/bin:$PATH"
+fi
+
+# -------------------------------------------------------------------
+# Editor defaults (used by git, tools, SSH, etc.)
+# -------------------------------------------------------------------
+# Nano is the safest, most predictable default everywhere.
+export EDITOR="{{ .editor }}"
+export VISUAL="{{ .editor }}"
+
+# -------------------------------------------------------------------
+# Locale
+# -------------------------------------------------------------------
+export LANG="en_AU.UTF-8"

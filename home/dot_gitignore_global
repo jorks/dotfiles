@@ -1,0 +1,36 @@
+# ~/.gitignore_global
+#
+# PURPOSE
+# -------
+# Global ignores for files that should never be committed,
+# regardless of project.
+
+# OS junk
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# Editor swap / backup files
+*~
+*.swp
+*.swo
+*.tmp
+
+# IDE / editor state
+.vscode/
+.idea/
+*.iml
+
+# macOS metadata
+Icon?
+._*
+
+# Node / frontend noise (only universally safe ones)
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python cache
+__pycache__/
+*.pyc

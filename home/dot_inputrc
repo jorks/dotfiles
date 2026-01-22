@@ -1,0 +1,38 @@
+# ~/.inputrc
+#
+# PURPOSE
+# -------
+# Readline configuration for shells and tools that use it
+# (bash, zsh in emulation mode, python REPL, git, etc.)
+#
+# Goals:
+# - Make command history easier to navigate
+# - Improve tab completion behaviour
+# - Keep defaults predictable and boring
+
+# -------------------------------------------------------------------
+# History navigation
+# -------------------------------------------------------------------
+# Up / Down arrows search history based on current input
+# e.g. typing "git" + ↑ cycles through previous git commands
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# -------------------------------------------------------------------
+# Tab completion behaviour
+# -------------------------------------------------------------------
+# Show completion options immediately instead of requiring a second Tab
+set show-all-if-ambiguous on
+
+# Case-insensitive tab completion
+# Useful when jumping between tools with mixed casing
+set completion-ignore-case on
+
+# -------------------------------------------------------------------
+# Readability / ergonomics
+# -------------------------------------------------------------------
+# Better visual separation when listing completions
+set completion-display-width 80
+
+# Avoid noisy terminal bells
+set bell-style none

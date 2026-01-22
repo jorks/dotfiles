@@ -1,0 +1,55 @@
+# -------------------------------------------------------------------
+# Homebrew Bundle
+# -------------------------------------------------------------------
+#
+# PURPOSE
+# -------
+# Defines macOS packages required for a usable development environment.
+#
+# This file intentionally mirrors the Linux CLI package set where possible
+# to minimise environment drift between macOS and Linux.
+#
+# GUI applications (casks) are layered separately.
+#
+
+# -------------------------------------------------------------------
+# Core CLI tools (cross-platform parity with Linux)
+# -------------------------------------------------------------------
+
+brew "git"
+brew "git-delta"
+brew "zsh"
+brew "fzf"
+brew "nano"
+brew "neovim"
+brew "ripgrep"
+brew "jq"
+brew "tldr"
+brew "htop"
+brew "btop"
+brew "ncdu"
+brew "duf"
+brew "bat"
+brew "eza"
+brew "lsof"
+brew "tree"
+brew "fd"
+
+# -------------------------------------------------------------------
+# Must have CLI tooling (macOS-specific)
+# -------------------------------------------------------------------
+
+brew "watch"
+brew "wget"
+brew "shellcheck"
+brew "bash"
+brew "1password-cli"
+
+# -------------------------------------------------------------------
+# Must have GUI applications (macOS only)
+# -------------------------------------------------------------------
+
+cask "google-chrome"
+cask "1password"
+cask "sublime-text"
+cask "raycast"

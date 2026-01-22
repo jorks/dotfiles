@@ -1,0 +1,46 @@
+# ~/.ssh/config
+#
+# PURPOSE
+# -------
+# Base SSH configuration managed by chezmoi.
+#
+# This file:
+# - Enables the 1Password SSH agent on macOS when available
+# - Sets a small number of sane, low-risk defaults
+#
+# Notes:
+# - This file is generated - do not edit directly
+# - Re-run `chezmoi apply` after installing tools like 1Password
+
+# -------------------------------------------------------------------
+# 1Password SSH agent (macOS only)
+# -------------------------------------------------------------------
+{{- if eq .chezmoi.os "darwin" -}}
+{{- $agent := printf "/Users/%s/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" .chezmoi.username -}}
+{{- if stat $agent }}
+Host *
+  IdentityAgent "{{ $agent }}"
+{{- end }}
+{{- end }}
+
+# -------------------------------------------------------------------
+# Global defaults
+# -------------------------------------------------------------------
+Host *
+  # Automatically add keys to the active agent
+  AddKeysToAgent yes
+
+  # Keep connections alive on unreliable networks
+  ServerAliveInterval 60
+  ServerAliveCountMax 3
+
+  # Reuse SSH connections for faster subsequent commands
+  # (improves repeated ssh/scp/rsync without changing behaviour)
+  ControlMaster auto
+  ControlPath ~/.ssh/cm-%r@%h:%p
+  ControlPersist 10m
+
+# -------------------------------------------------------------------
+# Local host definitions
+# -------------------------------------------------------------------
+  Include ~/.ssh/hosts.local

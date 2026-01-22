@@ -1,0 +1,45 @@
+# -------------------------------------------------------------------
+# .chezmoiignore
+# -------------------------------------------------------------------
+#
+# PURPOSE
+# -------
+# Controls which files in this repository are ignored by chezmoi
+# and never applied to the target system.
+#
+# This file intentionally does NOT use the `dot_` prefix convention.
+# Chezmoi treats `.chezmoiignore` as a special control file that must
+# exist at the repository root with this exact name.
+#
+# Use this file to exclude:
+# - documentation files
+# - example / reference artefacts
+# - local or private variants
+# - editor or OS-generated noise
+#
+# -------------------------------------------------------------------
+# Documentation
+# -------------------------------------------------------------------
+
+README.md
+CHEZMOI.md
+
+# -------------------------------------------------------------------
+# Example / reference files
+# -------------------------------------------------------------------
+
+*.example
+*.example.*
+
+# -------------------------------------------------------------------
+# Local-only or private variants
+# -------------------------------------------------------------------
+
+*.local
+*.private
+
+# -------------------------------------------------------------------
+# Editor / OS noise
+# -------------------------------------------------------------------
+
+.DS_Store
