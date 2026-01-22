@@ -193,9 +193,9 @@ if [[ "$APPLY_CHEZMOI" == "true" ]]; then
   read -r -p "Apply dotfiles with chezmoi now? (y/N): " CONFIRM
   if [[ "$CONFIRM" =~ ^[Yy]$ ]]; then
     if [[ "$DRY_RUN" == "true" ]]; then
-      log_info "[dry-run] chezmoi init --apply --source $REPO_ROOT/home"
+      log_info "[dry-run] chezmoi -S \"$REPO_ROOT\" init --apply"
     else
-      chezmoi init --apply --source "$REPO_ROOT/home"
+      chezmoi -S "$REPO_ROOT" init --apply
     fi
     log_success "Chezmoi applied"
   else
