@@ -80,6 +80,8 @@ Separate files for separate platforms. No branching logic. Let chezmoi decide wh
 
 All package installation goes through Brewfiles. No inline `brew install` in scripts. Scripts apply Brewfiles, they don't make installation decisions.
 
+**Exception:** Base CLI packages (`10-packages/`) use inline installation loops for auto-install on first apply. This is intentional - these foundational tools need to install immediately without manual Brewfile management. Kits use proper Brewfiles.
+
 No conditionals inside Brewfiles - use separate files instead.
 
 ## Adding new things

@@ -1,4 +1,3 @@
-#!/usr/bin/env sh
 # -------------------------------------------------------------------
 # PURPOSE:
 #   Brew helper functions for kit installation

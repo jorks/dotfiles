@@ -1,5 +1,5 @@
-# ~/.local/shell/ssh_hosts.example.zsh
-# Copy to ssh_hosts.local.zsh and customise
+# ~/.config/shell/hosts.example.zsh
+# Copy to hosts.local.zsh and customise
 
 # Network
 # alias sshfirewall="ssh user@firewall.example.net"
