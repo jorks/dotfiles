@@ -72,7 +72,7 @@ sourceDir = {{ .chezmoi.config.sourceDir | quote }}
 {{- $kits_macadmin := promptBoolOnce . "kits.macadmin" "Enable macadmin kit? (IT/sysadmin tools)" false -}}
 {{- $kits_productivity := promptBoolOnce . "kits.productivity" "Enable productivity kit? (Apps, utilities)" false -}}
 {{- $kits_security := promptBoolOnce . "kits.security" "Enable security kit? (VPN, security tools)" false -}}
-
+{{- $kit_fonts := promptBoolOnce . "kits.fonts" "Enable fonts kit? (Design fonts, bonus coding fonts)" false -}}
 # -------------------------------------------------------------------
 # Data output
 # -------------------------------------------------------------------
@@ -90,3 +90,4 @@ sourceDir = {{ .chezmoi.config.sourceDir | quote }}
   macadmin = {{ $kits_macadmin }}
   productivity = {{ $kits_productivity }}
   security = {{ $kits_security }}
+  fonts = {{ $kit_fonts }}

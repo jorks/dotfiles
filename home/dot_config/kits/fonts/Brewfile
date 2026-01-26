@@ -1,0 +1,49 @@
+# Fonts Kit
+#
+# Optional design and coding fonts for typography enthusiasts.
+# Comprehensive collection of popular typefaces for UI, web, and code.
+
+# ===================================================================
+# Design Fonts - Sans Serif
+# ===================================================================
+
+# Inter - Modern variable font, dominant in UI/web (GitHub, Vercel)
+cask "font-inter"
+
+# Poppins - Geometric sans, trending in 2024-26
+cask "font-poppins"
+
+# Roboto - Google's ubiquitous default
+cask "font-roboto"
+
+# Montserrat - Free Gotham alternative, professional
+cask "font-montserrat"
+
+# DM Sans - Minimal, excellent for UI
+cask "font-dm-sans"
+
+# Space Grotesk - Modern geometric with personality
+cask "font-space-grotesk"
+
+# ===================================================================
+# Design Fonts - Serif
+# ===================================================================
+
+# Merriweather - Readable body text
+cask "font-merriweather"
+
+# Playfair Display - Elegant headers
+cask "font-playfair-display"
+
+# ===================================================================
+# Bonus Coding Fonts
+# ===================================================================
+
+# Fira Code - Popular ligature support
+cask "font-fira-code"
+
+# Cascadia Code - Microsoft's coding font, excellent ligatures
+cask "font-cascadia-code"
+
+# Source Code Pro - Adobe's readable monospace
+cask "font-source-code-pro"

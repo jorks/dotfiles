@@ -5,6 +5,7 @@
 .chezmoiscripts/00-base/run_once_04-macos-rosetta.sh.tmpl
 .chezmoiscripts/00-base/run_once_05-macos-homebrew.sh.tmpl
 .chezmoiscripts/10-packages/run_onchange_10-base-cli-packages-macos.sh.tmpl
+.chezmoiscripts/10-packages/run_onchange_12-fonts-essentials.sh.tmpl
 .chezmoiscripts/30-kits/run_onchange_30-apply-kits.sh.tmpl
 .chezmoiscripts/40-os-defaults/run_onchange_40-macos-defaults.sh.tmpl
 .chezmoiscripts/40-os-defaults/run_onchange_41-terminal-profile.sh.tmpl
@@ -16,3 +17,7 @@
 .chezmoiscripts/00-base/run_once_07-linux-base-packages.sh.tmpl
 .chezmoiscripts/10-packages/run_onchange_11-base-cli-packages-linux.sh.tmpl
 {{- end }}
+
+{{- /* Exclude documentation files */ -}}
+home/README.md
+.chezmoiscripts/README.md

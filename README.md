@@ -1,112 +1,131 @@
 # dotfiles
 
-This is a minimal, opinionated dotfiles setup designed for fast, repeatable environment bootstrapping. It's built for macOS primarily, with lean Linux support for server environments.
+A production-ready dotfiles setup built entirely on chezmoi. Fast, rerunnable, forkable.
 
-The goal is simple: get from a fresh machine to a productive shell in under five minutes, without waiting for every GUI app you might eventually want. Bootstrap installs the essentials. Optional kits layer on tooling when you need it.
+This repo handles platform bootstrap, package management, dotfile templating, and lifecycle automation through a single framework. No custom orchestration. No parallel systems. Just chezmoi doing what it's designed to do.
 
-I use this across fresh installs, temporary machines, and remote servers. It's designed to be forked, adapted, and made your own.
+It's opinionated about structure but generic about content. Fork it, swap in your preferences, and you're done. That's the design.
+
+> **Lessons learned:**  Turns out I should have just read the chezmoi docs earlier. 90% of what I needed was already there. Don't reinvent what's built-in.
 
 ## Quick start
 
 On a fresh macOS or Linux machine:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/jorks/dotfiles/main/install.sh)
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply <your-github-username>
 ```
 
-This will:
+Replace `<your-github-username>` with your GitHub username. This assumes your dotfiles repo is named `dotfiles`.
 
-- Install Homebrew (macOS) or ensure core utilities are present (Linux)
-- Install and configure chezmoi
-- Apply your dotfiles from `home/`
-- Leave you with a working shell
+This installs chezmoi, clones your repo, and prompts for what you want installed. Five minutes from bare metal to a working shell with your config, your tools, your preferences.
 
-*(What's chezmoi? [It's a dotfile manager](https://www.chezmoi.io/). Think of it as a templating engine for your home directory.)*
+First run prompts for identity (name, email) and which capability kits to enable (dev tools, productivity apps, security utilities, etc.). Answers are stored locally, never committed. The repo stays generic.
 
-That's it. No apps, no bloat - just the foundation.
+After that, everything runs through `chezmoi apply`. Edit dotfiles, apply, done.
 
-If you want dev tools, productivity apps, or security utilities, run the optional kits afterward:
+## What you get
 
-```bash
-./kits/devtools.sh
-./kits/productivity.sh
-./kits/security.sh
+This is built entirely around chezmoi. No parallel framework, no custom orchestration. Chezmoi handles dotfiles, templates, and lifecycle scripts. Everything else is just data.
+
+**Platform bootstrap** – Homebrew, XCode CLT, base CLI tools. Minimal and boring.
+
+**Capability kits** – Opt-in bundles for dev tools, productivity apps, security utilities, macOS admin tooling. Enable what you need, skip the rest.
+
+**Dotfile management** – Shell configs, git settings, SSH templates, editor preferences. All templated for machine-specific values (your name, your email, your hostname).
+
+**Lifecycle automation** – Scripts run automatically during `chezmoi apply`. Platform setup happens once. Package lists reapply when changed. No manual intervention.
+
+**Cross-platform** – macOS first-class, Linux supported for servers. Platform-specific logic is isolated and explicit.
+
+## Why this exists (and why you should fork it)
+
+Most dotfiles repos are either too personal to reuse or too generic to be useful. This sits in the middle: opinionated enough to be a foundation, generic enough to fork without major surgery.
+
+I wanted something I could run on a new MacBook, a temporary EC2 instance, or a colleague's machine to pair-program. Something I could come back to six months later and understand immediately.
+
+The structure is deliberately constrained. Dotfiles go in `home/`. Lifecycle scripts go in `.chezmoiscripts/`. Packages go in Brewfiles. If it doesn't fit one of those categories, rethink what you're adding.
+
+This isn't my config anymore - it's a template. Your shell preferences, editor choices, and tool stack will differ. Fork it and make it yours. That's the intended workflow.
+
+## How it's organized
+
+```text
+dotfiles/
+├── home/                  # chezmoi source (maps to $HOME)
+│   ├── dot_zshrc
+│   ├── dot_gitconfig.tmpl
+│   └── dot_config/
+│       ├── shell/
+│       └── kits/          # capability Brewfiles
+│
+└── .chezmoiscripts/       # lifecycle automation
+    ├── 00-base/           # platform bootstrap
+    ├── 10-packages/       # base CLI tools
+    ├── 30-kits/           # kit orchestration
+    └── _lib/              # shared functions
 ```
 
-See `kits/README.md` for what each kit includes.
+Dotfiles and config live in `home/`. Scripts that run during apply live in `.chezmoiscripts/`. Packages are declared in Brewfiles, not inline in scripts.
 
-## Why this exists
+See [STRUCTURE.md](STRUCTURE.md) for expanded details.
 
-Most dotfiles repos are either too personal (full of hardcoded usernames and opaque scripts) or too generic (a pile of config files with no install story). This repo sits in between.
+## Templates and machine-specific config
 
-I wanted something I could run on:
+User-specific values (name, email, preferences) are prompted for on first run. Answers are stored locally in `~/.config/chezmoi/chezmoi.toml` and never touch version control.
 
-- A new MacBook straight out of the box
-- A temporary EC2 instance
-- A colleague's machine to pair on
-- My own setup, six months later, when I've forgotten how it works
+Templates reference these values: `{{ .git_name }}`, `{{ .kits.devtools }}`. The repo stays generic. Your machine gets your config.
 
-The bootstrap is intentionally boring. It installs chezmoi, applies your dotfiles, and gets out of the way. Everything else is opt-in. (Well, almost everything, I've bundled in a few apps I can't work without: Chrome, 1Password, Sublime Text, and Raycast. You do you.)
+Edit files in `home/`, run `chezmoi apply`, changes sync. No `chezmoi edit` workflow. Git is the primary interface.
 
-## Design principles
+See [home/README.md](home/README.md) for naming conventions and workflow.
 
-### Bootstrap does the minimum
+## Kits: opt-in capability bundles
 
-`install.sh` and the platform-specific bootstrap scripts (`bootstrap/macos/`, `bootstrap/linux/`) install only what's required for a working shell and chezmoi. On macOS, that's Homebrew and a small set of formulae. On Linux, even less - usually just chezmoi itself.
+Kits are groups of related tools you might not want on every machine. Each kit is a Brewfile in `home/dot_config/kits/<name>/` and an optional `setup.sh` for post-install config.
 
-This means the initial install is fast and predictable. You're not waiting for Docker or Node.js or a dozen other things you might not need right now.
+Available kits:
+- **devtools** – Docker, compilers, language runtimes, dev tools
+- **productivity** – Browsers, communication apps, utilities
+- **security** – VPNs, password managers, security tools
+- **macadmin** – IT/sysadmin tooling for Mac management
+- **fonts** – Design fonts and bonus coding fonts
 
-### Kits are optional and composable
+Enable kits via prompts on first run. Add new kits by creating a Brewfile and adding a prompt to `.chezmoi.toml.tmpl`. The orchestrator handles the rest.
 
-Once the bootstrap is done, you can run "kits" to install groups of related tools:
+## Forking
 
-- `devtools.sh` – compilers, language runtimes, Docker, etc.
-- `productivity.sh` – browsers, communication apps, utilities
-- `security.sh` – VPNs, password managers, security tools
-- `macadmin.sh` – IT/sysadmin tooling for Mac management
+Please fork this. Seriously.
 
-Kits are just shell scripts that call Homebrew (or other installers) in a structured way. They're safe to run multiple times. You can edit them, skip them, or write your own.
+This repo is a starting point. Your preferences will differ. When you fork:
 
-### Linux support is intentionally minimal
+- Fork this repo and rename it to `dotfiles` (or adjust the chezmoi init command)
+- Edit `home/` to match your shell and editor preferences
+- Customize kits to match your toolchain
+- Add or remove platform-specific setup as needed
 
-This repo targets server Linux, not desktop Linux. The Linux bootstrap skips GUI apps and focuses on shell utilities, chezmoi, and SSH config. If you're running a desktop Linux environment, you'll want to fork this and expand the bootstrap to match your needs.
+The structure is intentionally simple. Shell scripts, config files, Brewfiles. No build system, no framework magic. If you can read bash and understand chezmoi prefixes, you can modify this.
 
-### Chezmoi is an apply engine, not an edit workflow
+## Design notes
 
-The `home/` directory is the chezmoi source directory. When you run the install, chezmoi applies those files to your home directory. That's it.
+A few things I learned the hard way:
 
-I don't use `chezmoi edit`. I edit files in `home/` directly, then run `chezmoi apply` to sync changes. This keeps the workflow simple and version-control-friendly.
+**Don't fight the framework.** Chezmoi has opinions about structure and lifecycle. Work with them, not around them. Custom orchestration outside chezmoi is a maintenance nightmare.
 
-Templates (`.tmpl` files) let you handle differences across machines: usernames, email addresses, SSH hosts - without hardcoding anything. See `home/CHEZMOI.md` for how this works.
+**Keep scripts focused.** One script, one job. If it's doing three things, split it into three scripts. Execution order is controlled by numbering and prefixes.
 
-### No secrets, no personal data
+**Brewfiles are data, not logic.** No inline `brew install` in scripts. Scripts apply Brewfiles. Separation of concerns.
 
-This repo contains no usernames, email addresses, API keys, or personal information. Anything machine-specific is templated and sourced from chezmoi's encrypted data or interactive prompts.
+**Platform differences are explicit.** Separate files for macOS and Linux. No complex branching. Let chezmoi decide what to apply via conditionals and `.chezmoiignore`.
 
-That makes it safe to publish, easy to share, and trivial to fork.
-
-## Forking this
-
-You should fork this.
-
-This repo is a starting point, not a prescription. Your shell preferences, editor config, and tool choices are different from mine. Fork it, rip out what you don't need, and adapt it to your workflow.
-
-A few things to check when you fork:
-
-- Update the install URL in this README
-- Edit `home/` to reflect your preferred shell config
-- Customise the kits in `kits/` to match your toolchain
-- Adjust bootstrap scripts if you have different baseline requirements
-
-The structure is intentionally simple. Everything is a shell script or a config file. No build system, no framework, no magic.
+**Templates for values, dotfiles for config.** If it changes per machine (name, email), template it. If it's preference (shell aliases, editor settings), dotfile it.
 
 ## Documentation
 
-- [**STRUCTURE.md**](STRUCTURE.md) – How this repo is organised and where things live
-- [**home/README.md**](home/README.md) – What's in the dotfiles directory and how to modify it
-- [**home/CHEZMOI.md**](home/CHEZMOI.md) – How chezmoi is used, templates, and data sourcing
-- [**kits/README.md**](kits/README.md) – What each kit installs and how to run them
+- [**STRUCTURE.md**](STRUCTURE.md) – Repository layout and customization guide
+- [**home/README.md**](home/README.md) – Dotfile naming conventions and workflow
+- [**.chezmoiscripts/README.md**](.chezmoiscripts/README.md) – Lifecycle scripts explained
 
 ## License
 
-MIT. See [LICENSE.md](LICENSE.md).
+MIT. See [LICENSE.md](LICENSE.md). Use it, fork it, make it yours.
