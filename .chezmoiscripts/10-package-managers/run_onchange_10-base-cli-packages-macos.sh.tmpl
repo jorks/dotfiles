@@ -1,0 +1,67 @@
+{{- if .install_base_cli -}}
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install base CLI packages on macOS via Homebrew
+#
+# SCOPE:
+#   - Runs on: macOS only (excluded on Linux via .chezmoiignore)
+#   - Lifecycle: run_onchange (re-runs when package list changes)
+#
+# BEHAVIOUR:
+#   - Idempotent (brew handles already-installed packages)
+#   - Controlled by .install_base_cli config flag
+#
+# NOTES:
+#   - Package list intentionally minimal (CLI tools only)
+#   - GUI apps belong in kits or separate scripts
+#   - KEEP IN SYNC with run_onchange_11-base-cli-packages-linux.sh.tmpl
+# -------------------------------------------------------------------
+
+# shellcheck source=../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+
+# ┌─────────────────────────────────────────────────────────────────┐
+# │ BASE CLI PACKAGES                                               │
+# │                                                                 │
+# │ ⚠️  WARNING: Keep this list in sync with the Linux variant!    │
+# │    File: run_onchange_11-base-cli-packages-linux.sh.tmpl       │
+# │                                                                 │
+# │ Package names may differ slightly (e.g., fd vs fd-find).       │
+# │ This drift is acceptable - just keep intent aligned.           │
+# └─────────────────────────────────────────────────────────────────┘
+
+PACKAGES="
+  curl
+  wget
+  git
+  zsh
+  fzf
+  ripgrep
+  fd
+  jq
+  neovim
+  nano
+  shellcheck
+  tree
+  htop
+  watch
+  bash
+"
+
+log_info "Installing base CLI packages via Homebrew..."
+
+# Install packages (brew handles already-installed gracefully)
+for pkg in $PACKAGES; do
+  log_info "Installing: $pkg"
+  if brew install "$pkg"; then
+    log_success "$pkg installed"
+  else
+    log_warn "Failed to install $pkg (continuing)"
+  fi
+done
+
+log_success "Base CLI packages installed"
+{{- end -}}

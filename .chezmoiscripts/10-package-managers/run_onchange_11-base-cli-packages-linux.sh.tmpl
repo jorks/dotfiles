@@ -1,0 +1,67 @@
+{{- if .install_base_cli -}}
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install base CLI packages on Linux via apt
+#
+# SCOPE:
+#   - Runs on: Linux only (excluded on macOS via .chezmoiignore)
+#   - Lifecycle: run_onchange (re-runs when package list changes)
+#
+# BEHAVIOUR:
+#   - Idempotent (apt handles already-installed packages)
+#   - Controlled by .install_base_cli config flag
+#   - Requires sudo
+#
+# NOTES:
+#   - Package list intentionally minimal (CLI tools only)
+#   - Assumes apt (Ubuntu/Debian/Amazon Linux)
+#   - KEEP IN SYNC with run_onchange_10-base-cli-packages-macos.sh.tmpl
+# -------------------------------------------------------------------
+
+# shellcheck source=../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+
+# ┌─────────────────────────────────────────────────────────────────┐
+# │ BASE CLI PACKAGES                                               │
+# │                                                                 │
+# │ ⚠️  WARNING: Keep this list in sync with the macOS variant!    │
+# │    File: run_onchange_10-base-cli-packages-macos.sh.tmpl       │
+# │                                                                 │
+# │ Some package names differ from macOS (e.g., fd-find vs fd).    │
+# │ This drift is acceptable - just keep intent aligned.           │
+# └─────────────────────────────────────────────────────────────────┘
+
+PACKAGES="
+  curl
+  wget
+  git
+  zsh
+  fzf
+  ripgrep
+  fd-find
+  jq
+  neovim
+  nano
+  shellcheck
+  tree
+  htop
+"
+
+log_info "Installing base CLI packages via apt (requires admin privileges)..."
+log_warn "You may be prompted for your password"
+
+# Install packages (apt handles already-installed gracefully)
+for pkg in $PACKAGES; do
+  log_info "Installing: $pkg"
+  if sudo apt-get install -y "$pkg"; then
+    log_success "$pkg installed"
+  else
+    log_warn "Failed to install $pkg (continuing)"
+  fi
+done
+
+log_success "Base CLI packages installed"
+{{- end -}}
