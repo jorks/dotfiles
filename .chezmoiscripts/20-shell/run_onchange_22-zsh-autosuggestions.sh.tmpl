@@ -1,0 +1,47 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install zsh-autosuggestions plugin
+#
+# SCOPE:
+#   - Runs on: macOS, Linux
+#   - Lifecycle: run_onchange (updates when script changes)
+#
+# BEHAVIOUR:
+#   - Idempotent (git clone handles existing repos)
+#   - Clones to Oh My Zsh custom plugins directory
+#
+# NOTES:
+#   - Requires Oh My Zsh to be installed first
+#   - Requires git (from base packages)
+#   - Enable in .zshrc via chezmoi dotfiles
+# -------------------------------------------------------------------
+
+# shellcheck source=../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+
+# Determine custom plugins directory
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+PLUGIN_DIR="$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+
+# Check if already installed
+if [ -d "$PLUGIN_DIR" ]; then
+  log_info "zsh-autosuggestions already installed"
+  # Update existing installation
+  log_info "Updating zsh-autosuggestions..."
+  cd "$PLUGIN_DIR" && git pull --quiet
+  log_success "zsh-autosuggestions updated"
+  exit 0
+fi
+
+log_info "Installing zsh-autosuggestions..."
+
+# Clone plugin
+if git clone --quiet https://github.com/zsh-users/zsh-autosuggestions "$PLUGIN_DIR"; then
+  log_success "zsh-autosuggestions installed"
+else
+  log_error "Failed to install zsh-autosuggestions"
+  exit 1
+fi

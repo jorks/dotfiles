@@ -1,0 +1,75 @@
+{{- if eq .chezmoi.os "darwin" }}
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Import and set custom macOS Terminal profile as default
+#
+# SCOPE:
+#   - Runs on: macOS only (excluded on Linux via .chezmoiignore)
+#   - Lifecycle: run_onchange (re-runs when profile changes)
+#
+# BEHAVIOUR:
+#   - Idempotent (checks if already applied)
+#   - Imports .terminal profile file
+#   - Sets as default for new windows
+#
+# NOTES:
+#   - Profile file must exist at ~/.config/terminal/macos.terminal
+#   - Profile is managed by chezmoi (changes trigger re-run)
+#   - Changes apply to new Terminal windows immediately
+# -------------------------------------------------------------------
+
+# shellcheck source=../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+
+PROFILE_FILE="{{ .chezmoi.homeDir }}/.config/terminal/macos.terminal"
+PROFILE_NAME="Custom"  # Default name - extracted from file if possible
+
+# Check if profile file exists
+if [ ! -f "$PROFILE_FILE" ]; then
+  log_warn "Terminal profile not found: $PROFILE_FILE (skipping)"
+  exit 0
+fi
+
+# Try to extract profile name from the .terminal file (it's a plist)
+if command -v plutil >/dev/null 2>&1; then
+  # Extract the first key from the plist (this is typically the profile name)
+  EXTRACTED_NAME="$(plutil -extract 'Window Settings' xml1 -o - "$PROFILE_FILE" 2>/dev/null | grep -A 1 '<key>' | head -2 | tail -1 | sed 's/.*<key>\(.*\)<\/key>.*/\1/' || echo "")"
+
+  if [ -n "$EXTRACTED_NAME" ]; then
+    PROFILE_NAME="$EXTRACTED_NAME"
+    log_info "Detected profile name: $PROFILE_NAME"
+  fi
+fi
+
+# Check if already set as default
+CURRENT_DEFAULT="$(defaults read com.apple.Terminal "Default Window Settings" 2>/dev/null || echo "")"
+
+if [ "$CURRENT_DEFAULT" = "$PROFILE_NAME" ]; then
+  log_info "Terminal profile already set as default: $PROFILE_NAME"
+  exit 0
+fi
+
+log_info "Importing Terminal profile: $PROFILE_FILE"
+
+# Import profile (opens and imports into Terminal.app)
+if open "$PROFILE_FILE"; then
+  log_success "Profile imported"
+else
+  log_error "Failed to import profile"
+  exit 1
+fi
+
+# Wait a moment for profile to be registered
+sleep 1
+
+# Set as default profile for new windows
+log_info "Setting as default profile: $PROFILE_NAME"
+defaults write com.apple.Terminal "Default Window Settings" -string "$PROFILE_NAME"
+defaults write com.apple.Terminal "Startup Window Settings" -string "$PROFILE_NAME"
+
+log_success "Terminal profile configured: $PROFILE_NAME"
+log_warn "Changes apply to new Terminal windows"
+{{- end }}

@@ -1,0 +1,18 @@
+{{- /* Exclude macOS-specific scripts on Linux */ -}}
+{{- if ne .chezmoi.os "darwin" }}
+.chezmoiscripts/00-base/run_once_01-macos-hostname.sh.tmpl
+.chezmoiscripts/00-base/run_once_03-macos-xcode-clt.sh.tmpl
+.chezmoiscripts/00-base/run_once_04-macos-rosetta.sh.tmpl
+.chezmoiscripts/00-base/run_once_05-macos-homebrew.sh.tmpl
+.chezmoiscripts/10-packages/run_onchange_10-base-cli-packages-macos.sh.tmpl
+.chezmoiscripts/30-kits/run_onchange_30-apply-kits.sh.tmpl
+.chezmoiscripts/40-os-defaults/run_onchange_40-macos-defaults.sh.tmpl
+.chezmoiscripts/40-os-defaults/run_onchange_41-terminal-profile.sh.tmpl
+{{- end }}
+
+{{- /* Exclude Linux-specific scripts on macOS */ -}}
+{{- if ne .chezmoi.os "linux" }}
+.chezmoiscripts/00-base/run_once_06-linux-apt-update.sh.tmpl
+.chezmoiscripts/00-base/run_once_07-linux-base-packages.sh.tmpl
+.chezmoiscripts/10-packages/run_onchange_11-base-cli-packages-linux.sh.tmpl
+{{- end }}

@@ -37,6 +37,15 @@ sourceDir = {{ .chezmoi.config.sourceDir | quote }}
 {{- $git_email := promptStringOnce . "git_email" "Git email (e.g., tsmith@users.noreply.github.com)" -}}
 
 # -------------------------------------------------------------------
+# Device classification
+#
+# Determines how certain system settings are managed.
+# -------------------------------------------------------------------
+
+{{- $is_personal := promptBoolOnce . "is_personal" "Is this a personal computer?" true -}}
+{{- $primary_email := promptStringOnce . "primary_email" "Primary email for this device" "" -}}
+
+# -------------------------------------------------------------------
 # Preferences (safe defaults)
 #
 # These values have sensible defaults so pressing Enter is acceptable.
@@ -46,10 +55,38 @@ sourceDir = {{ .chezmoi.config.sourceDir | quote }}
 {{- $editor := promptStringOnce . "editor" "Preferred editor" "nano" -}}
 
 # -------------------------------------------------------------------
+# Package installation (opt-out defaults)
+#
+# Control what gets installed. Defaults to yes for base essentials.
+# -------------------------------------------------------------------
+
+{{- $install_base_cli := promptBoolOnce . "install_base_cli" "Install base CLI packages (git, curl, fzf, etc.)" true -}}
+
+# -------------------------------------------------------------------
+# Kits (opt-in defaults)
+#
+# Optional capability layers. Enable what you need.
+# -------------------------------------------------------------------
+
+{{- $kits_devtools := promptBoolOnce . "kits.devtools" "Enable devtools kit? (Docker, compilers, dev tools)" false -}}
+{{- $kits_macadmin := promptBoolOnce . "kits.macadmin" "Enable macadmin kit? (IT/sysadmin tools)" false -}}
+{{- $kits_productivity := promptBoolOnce . "kits.productivity" "Enable productivity kit? (Apps, utilities)" false -}}
+{{- $kits_security := promptBoolOnce . "kits.security" "Enable security kit? (VPN, security tools)" false -}}
+
+# -------------------------------------------------------------------
 # Data output
 # -------------------------------------------------------------------
 
 [data]
   git_name = {{ $git_name | quote }}
   git_email = {{ $git_email | quote }}
+  is_personal = {{ $is_personal }}
+  primary_email = {{ $primary_email | quote }}
   editor = {{ $editor | quote }}
+  install_base_cli = {{ $install_base_cli }}
+
+[data.kits]
+  devtools = {{ $kits_devtools }}
+  macadmin = {{ $kits_macadmin }}
+  productivity = {{ $kits_productivity }}
+  security = {{ $kits_security }}

@@ -20,6 +20,10 @@
 # Your custom logic should live outside ~/.oh-my-zsh.
 export ZSH="$HOME/.oh-my-zsh"
 
+# Auto-update behavior (set before loading Oh My Zsh)
+DISABLE_UPDATE_PROMPT="true"  # Auto-update without asking
+UPDATE_ZSH_DAYS=7             # Check weekly
+
 # Theme
 # Keep this simple and readable (especially on servers).
 ZSH_THEME="robbyrussell"

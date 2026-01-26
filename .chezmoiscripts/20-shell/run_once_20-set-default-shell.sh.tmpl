@@ -1,0 +1,49 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Set zsh as the default shell
+#
+# SCOPE:
+#   - Runs on: macOS, Linux
+#   - Lifecycle: run_once
+#
+# BEHAVIOUR:
+#   - Idempotent (skips if zsh already default)
+#   - Requires sudo (uses chsh)
+#   - Changes take effect on next login
+#
+# NOTES:
+#   - zsh must already be installed (from base packages)
+#   - User must log out and back in to see effect
+# -------------------------------------------------------------------
+
+# shellcheck source=../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+
+# Get zsh path
+ZSH_PATH="$(command -v zsh)"
+
+if [ -z "$ZSH_PATH" ]; then
+  log_error "zsh not found in PATH - install it first"
+  exit 1
+fi
+
+# Check if already default
+if [ "$SHELL" = "$ZSH_PATH" ]; then
+  log_info "zsh already set as default shell"
+  exit 0
+fi
+
+log_info "Setting zsh as default shell (requires admin privileges)..."
+log_warn "You may be prompted for your password"
+log_warn "Changes take effect on next login"
+
+# Change default shell
+if chsh -s "$ZSH_PATH"; then
+  log_success "Default shell set to zsh"
+else
+  log_error "Failed to change default shell"
+  exit 1
+fi

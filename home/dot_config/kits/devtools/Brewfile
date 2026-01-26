@@ -1,0 +1,22 @@
+# Devtools Kit
+#
+# Development tools, compilers, runtimes, and containers.
+# This is the minimal set for software engineering work.
+
+# Containers
+brew "docker"
+brew "docker-compose"
+
+# Languages & Runtimes
+brew "node"
+brew "python@3.12"
+brew "go"
+
+# Build tools
+brew "cmake"
+brew "pkg-config"
+
+# Development utilities
+brew "gh"          # GitHub CLI
+brew "jq"          # Already in base, but showing pattern
+brew "httpie"      # HTTP client

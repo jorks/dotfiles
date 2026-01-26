@@ -1,19 +1,22 @@
-#!/usr/bin/env bash
-
 # -------------------------------------------------------------------
-# Logging helpers
+# PURPOSE:
+#   Logging helpers for chezmoi run_* scripts with clear dotfiles
+#   prefixing and optional colour for interactive use.
 #
-# Goals:
-# - Make it obvious when *this script* is doing something
-# - Stay readable next to noisy tools like brew
-# - Use colour only when interactive
-# - Be safe in non-TTY / CI environments
+# SCOPE:
+#   - Sourced by scripts in .chezmoiscripts/
+#   - No execution logic
+#
+# BEHAVIOUR:
+#   - Pure functions
+#   - Safe to source multiple times
+#   - No global state mutation beyond local constants
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
 # Detect interactivity / colour support
 # -------------------------------------------------------------------
-if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
   COLOR_RESET="\033[0m"
   COLOR_DIM="\033[2m"
   COLOR_BOLD="\033[1m"
@@ -33,7 +36,7 @@ else
 fi
 
 # -------------------------------------------------------------------
-# Prefix (makes it clear this is *your* script)
+# Prefix (clearly identifies dotfiles output)
 # -------------------------------------------------------------------
 LOG_PREFIX="${COLOR_DIM}[dotfiles]${COLOR_RESET}"
 
@@ -41,41 +44,24 @@ LOG_PREFIX="${COLOR_DIM}[dotfiles]${COLOR_RESET}"
 # Logging functions
 # -------------------------------------------------------------------
 log_info() {
-  echo -e "${LOG_PREFIX} ${COLOR_INFO}→${COLOR_RESET} $*"
+  printf "%b\n" "${LOG_PREFIX} ${COLOR_INFO}→${COLOR_RESET} $*"
 }
 
 log_success() {
-  echo -e "${LOG_PREFIX} ${COLOR_SUCCESS}✓${COLOR_RESET} $*"
+  printf "%b\n" "${LOG_PREFIX} ${COLOR_SUCCESS}✓${COLOR_RESET} $*"
 }
 
 log_warn() {
-  echo -e "${LOG_PREFIX} ${COLOR_WARN}!${COLOR_RESET} $*" >&2
+  printf "%b\n" "${LOG_PREFIX} ${COLOR_WARN}!${COLOR_RESET} $*" >&2
 }
 
 log_error() {
-  echo -e "${LOG_PREFIX} ${COLOR_ERROR}✗${COLOR_RESET} $*" >&2
-}
-
-log_fatal() {
-  log_error "$*"
-  exit 1
+  printf "%b\n" "${LOG_PREFIX} ${COLOR_ERROR}✗${COLOR_RESET} $*" >&2
 }
 
 # -------------------------------------------------------------------
-# Section helper (for visual separation)
+# Section helper (visual separation only)
 # -------------------------------------------------------------------
 log_section() {
-  echo
-  echo -e "${LOG_PREFIX} ${COLOR_BOLD}$*${COLOR_RESET}"
-}
-
-# -------------------------------------------------------------------
-# Command runner (optional but recommended)
-# -------------------------------------------------------------------
-run_cmd() {
-  if [[ "${DRY_RUN:-false}" == "true" ]]; then
-    echo -e "${LOG_PREFIX} ${COLOR_DIM}[dry-run]${COLOR_RESET} $*"
-  else
-    "$@"
-  fi
+  printf "\n%b\n" "${LOG_PREFIX} ${COLOR_BOLD}$*${COLOR_RESET}"
 }
