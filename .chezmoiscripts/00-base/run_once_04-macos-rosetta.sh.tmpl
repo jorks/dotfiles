@@ -1,0 +1,46 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install Rosetta 2 on Apple Silicon Macs
+#
+# SCOPE:
+#   - Runs on: macOS only (excluded on Linux via .chezmoiignore)
+#   - Lifecycle: run_once
+#
+# BEHAVIOUR:
+#   - Idempotent (skips if not ARM or already installed)
+#   - Requires sudo
+#   - Agrees to license automatically
+#
+# NOTES:
+#   - Only needed on Apple Silicon (arm64)
+#   - Required for x86_64 compatibility layer
+# -------------------------------------------------------------------
+
+# shellcheck source=../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+
+# Check if running on ARM
+if [ "$(uname -m)" != "arm64" ]; then
+  log_info "Rosetta not needed on Intel Mac"
+  exit 0
+fi
+
+# Check if already installed
+if /usr/bin/pgrep -q oahd || [ -f /Library/Apple/usr/share/rosetta/rosetta ]; then
+  log_info "Rosetta already installed"
+  exit 0
+fi
+
+log_info "Installing Rosetta 2 (requires admin privileges)..."
+log_warn "You may be prompted for your password"
+
+# Install with automatic license agreement
+if sudo softwareupdate --install-rosetta --agree-to-license; then
+  log_success "Rosetta 2 installed"
+else
+  log_error "Rosetta installation failed"
+  exit 1
+fi

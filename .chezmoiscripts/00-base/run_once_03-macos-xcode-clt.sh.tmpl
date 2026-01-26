@@ -1,0 +1,49 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install Xcode Command Line Tools on macOS
+#
+# SCOPE:
+#   - Runs on: macOS only (excluded on Linux via .chezmoiignore)
+#   - Lifecycle: run_once
+#
+# BEHAVIOUR:
+#   - Idempotent (skips if already installed)
+#   - Waits for user to accept T&C dialog
+#   - Verifies installation completed
+#
+# NOTES:
+#   - Required for git, make, and many dev tools
+#   - User must manually accept license in GUI dialog
+# -------------------------------------------------------------------
+
+# shellcheck source=../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+
+# Check if already installed
+if xcode-select -p >/dev/null 2>&1; then
+  log_info "Xcode Command Line Tools already installed"
+  exit 0
+fi
+
+log_info "Installing Xcode Command Line Tools..."
+log_warn "A dialog will appear - you must manually accept the license to continue"
+
+# Trigger installation
+xcode-select --install 2>/dev/null || true
+
+# Wait for installation to complete
+log_info "Waiting for installation to complete..."
+until xcode-select -p >/dev/null 2>&1; do
+  sleep 5
+done
+
+# Verify
+if xcode-select -p >/dev/null 2>&1; then
+  log_success "Xcode Command Line Tools installed"
+else
+  log_error "Installation verification failed"
+  exit 1
+fi

@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Update apt package lists and upgrade system packages
+#
+# SCOPE:
+#   - Runs on: Linux only (excluded on macOS via .chezmoiignore)
+#   - Lifecycle: run_once
+#
+# BEHAVIOUR:
+#   - Idempotent
+#   - Updates package lists
+#   - Upgrades all installed packages
+#   - Requires sudo
+#
+# NOTES:
+#   - Critical early step for Debian/Ubuntu systems
+#   - Ensures package manager is current before installations
+# -------------------------------------------------------------------
+
+# shellcheck source=../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+
+log_info "Updating apt package lists (requires admin privileges)..."
+log_warn "You may be prompted for your password"
+
+# Update package lists
+if ! sudo apt-get update; then
+  log_error "Failed to update package lists"
+  exit 1
+fi
+
+log_info "Upgrading installed packages..."
+
+# Upgrade packages (non-interactive)
+if sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y; then
+  log_success "System packages updated"
+else
+  log_error "Failed to upgrade packages"
+  exit 1
+fi

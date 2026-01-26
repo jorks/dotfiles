@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Verify basic system invariants before any setup
+#
+# SCOPE:
+#   - Runs on: macOS, Linux
+#   - Lifecycle: run_once
+#
+# BEHAVIOUR:
+#   - Idempotent
+#   - Fails fast if invariants are violated
+#
+# NOTES:
+#   - Does NOT check for tools installed by later scripts
+#   - Focuses only on unchangeable prerequisites
+# -------------------------------------------------------------------
+
+# shellcheck source=../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+
+# Verify not running as root
+if [ "$(id -u)" -eq 0 ]; then
+  log_error "Do not run as root. Run as your normal user (sudo will be requested when needed)"
+  exit 1
+fi
+
+# Verify HOME is writable
+if [ ! -w "$HOME" ]; then
+  log_error "HOME directory is not writable: $HOME"
+  exit 1
+fi
+
+log_success "Preflight checks passed"

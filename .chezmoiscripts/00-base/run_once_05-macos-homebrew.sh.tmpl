@@ -1,0 +1,48 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install Homebrew package manager on macOS
+#
+# SCOPE:
+#   - Runs on: macOS only (excluded on Linux via .chezmoiignore)
+#   - Lifecycle: run_once
+#
+# BEHAVIOUR:
+#   - Idempotent (skips if already installed)
+#   - Uses official Homebrew install script
+#   - Non-interactive installation
+#
+# NOTES:
+#   - Required for all subsequent package installations on macOS
+#   - Installs to /opt/homebrew (Apple Silicon) or /usr/local (Intel)
+# -------------------------------------------------------------------
+
+# shellcheck source=../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+
+# Check if Homebrew already installed
+if command -v brew >/dev/null 2>&1; then
+  log_info "Homebrew already installed at: $(command -v brew)"
+  exit 0
+fi
+
+log_info "Installing Homebrew..."
+
+# Download and run official install script (non-interactive)
+if NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+  log_success "Homebrew installed"
+else
+  log_error "Homebrew installation failed"
+  exit 1
+fi
+
+# Add to PATH for this session (chezmoi sets up shell PATH permanently via dotfiles)
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+log_success "Homebrew ready"
