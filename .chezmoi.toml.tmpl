@@ -19,14 +19,6 @@
 # -------------------------------------------------------------------
 
 # -------------------------------------------------------------------
-# Chezmoi core configuration
-#
-# Persist the source directory when using `-S/--source`.
-# This is REQUIRED for chezmoi doctor, cd, and apply to work.
-# -------------------------------------------------------------------
-sourceDir = {{ .chezmoi.config.sourceDir | quote }}
-
-# -------------------------------------------------------------------
 # Identity (no defaults)
 #
 # These values are intentionally prompted for with no defaults.
