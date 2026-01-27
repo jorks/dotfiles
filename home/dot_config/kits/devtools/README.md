@@ -1,25 +1,14 @@
 # Devtools Kit
 
-Optional development tools and runtimes.
+Development tools and runtimes for machines where you write code.
 
-## Includes
+## Packages
 
 - **Containers**: Docker, docker-compose
 - **Languages**: Node.js, Python, Go
 - **Build tools**: cmake, pkg-config
 - **Dev utilities**: GitHub CLI, httpie
 
-## Setup
+## Notes
 
-Enabled via `.chezmoi.toml`:
-```toml
-[data.kits]
-  devtools = true
-```
-
-Applied automatically by `30-apply-kits.sh` orchestrator.
-
-## Customization
-
-- **Brewfile**: Package definitions
-- **setup.sh**: Optional custom configuration (currently none needed)
+This is the minimal set for software engineering work. Add language-specific toolchains (Rust, Java, etc.) as needed.

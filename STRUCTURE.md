@@ -2,7 +2,7 @@
 
 This is a chezmoi-first dotfiles setup. Everything runs through chezmoi's lifecycle. There's no parallel framework to learn.
 
-Fork this, rip out what you don't need, and adapt it to your workflow. This document explains where things live and how to extend them.
+Fork this, rip out what you don't need, and adapt it to your workflow. This document explains the architecture, where things live, and how to extend them.
 
 ## Repository layout
 
@@ -52,23 +52,31 @@ Scripts run automatically during `chezmoi apply`, numbered for execution order. 
 - `run_once_` – runs once per machine
 - `run_onchange_` – reruns when script content or dependencies change
 
-**`00-base/`** – One-time platform setup. Homebrew, XCode CLT, XDG directories. Minimal and boring.
+**Directory structure:**
+- `00-base/` – Platform bootstrap (Homebrew, XCode CLT, XDG directories)
+- `10-packages/` – Base CLI tools
+- `20-shell/` – Shell-specific setup
+- `30-kits/` – Kit orchestration
+- `40-os-defaults/` – macOS system preferences
+- `_lib/` – Shared functions (logging, Brewfile helpers)
 
-**`10-packages/`** – Base CLI tools via Homebrew or apt. Things like `git`, `curl`, `jq`, `fzf`.
-
-**`20-shell/`** – Shell-specific setup. Minimal, mostly handled via dotfiles instead.
-
-**`30-kits/`** – Orchestrates optional capability bundles. Loops through enabled kits in `.chezmoi.toml`, applies their Brewfiles, runs optional `setup.sh` scripts.
-
-**`40-os-defaults/`** – macOS system preferences. Runs once, safe to rerun.
-
-**`_lib/`** – Shared functions sourced by other scripts. Logging, Brewfile helpers, error handling.
+See [.chezmoiscripts/README.md](../.chezmoiscripts/README.md) for detailed script documentation and how to add new scripts.
 
 ## Templates and data
 
 User-specific values (name, email, preferences) are defined in `.chezmoi.toml.tmpl`. On first apply, chezmoi prompts once. Answers live in `~/.config/chezmoi/chezmoi.toml` locally and never touch version control.
 
 Templates reference these values: `{{ .git_name }}`, `{{ .kits.devtools }}`. No defaults for identity, sensible defaults for preferences.
+
+### Workflow options
+
+**Option 1: chezmoi edit workflow**  
+Use `chezmoi edit <file>` to edit in chezmoi's source directory (typically `~/.local/share/chezmoi`). Commit and push from there. Chezmoi manages the apply automatically.
+
+**Option 2: Direct git workflow** (my preference)  
+Edit `home/` directly in your IDE, commit via git, then run `chezmoi apply` to sync changes. This repo is designed for this pattern - the source is version-controlled, not hidden.
+
+Both work. Choose what fits your muscle memory.
 
 ## Platform differences
 
@@ -84,6 +92,63 @@ All package installation goes through Brewfiles. No inline `brew install` in scr
 
 No conditionals inside Brewfiles - use separate files instead.
 
+## Kits system
+
+Your work laptop doesn't need the same tools as your home desktop. Kits let you install groups of related tools only where they make sense.
+
+Each kit is a Brewfile (packages to install) and optional `setup.sh` (post-install config that can't be declarative). They live in `home/dot_config/kits/<name>/` and are applied to `~/.config/kits/` by chezmoi.
+
+### How kits work
+
+1. **Enable during first run** – `.chezmoi.toml.tmpl` prompts which kits you want
+2. **Kits are applied** – The `30-apply-kits.sh` orchestrator loops through enabled kits in your config
+3. **Brewfiles install packages** – Each kit's Brewfile gets applied via `brew bundle`
+4. **Optional setup runs** – If a `setup.sh` exists, it runs for kit-specific configuration
+
+### Available kits
+
+- **devtools** – Docker, compilers, language runtimes. For machines where you write code.
+- **productivity** – Browsers, communication apps, utilities. Personal laptops, not servers.
+- **security** – VPNs, password managers. Work machines, not your homelab.
+- **macadmin** – IT/sysadmin tooling for Mac management. Only if you're that kind of sysadmin.
+- **fonts** – Design fonts and bonus coding fonts. Typography nerds only.
+
+See [home/dot_config/kits/README.md](home/dot_config/kits/README.md) for details on individual kits and how to create new ones.
+
+## Design principles
+
+A few architectural rules that make this system work:
+
+**Don't fight the framework.** Chezmoi has opinions about structure and lifecycle. Work with them, not around them. Custom orchestration outside chezmoi is a maintenance nightmare.
+
+**Keep scripts focused.** One script, one job. If it's doing three things, split it into three scripts. Execution order is controlled by numbering and prefixes.
+
+**Brewfiles are data, not logic.** No inline `brew install` in scripts (except base packages for auto-install). Scripts apply Brewfiles. Separation of concerns.
+
+**Platform differences are explicit.** Separate files for macOS and Linux. No complex branching. Let chezmoi decide what to apply via conditionals and `.chezmoiignore`.
+
+**Templates for values, dotfiles for config.** If it changes per machine (name, email), template it. If it's preference (shell aliases, editor settings), dotfile it.
+
+## Troubleshooting
+
+**Something looks wrong?**  
+Run `chezmoi doctor` to check your setup.
+
+**Script failed?**  
+Chezmoi scripts are idempotent — safe to rerun. Fix the issue and `chezmoi apply` again.
+
+**Want to see what changed?**  
+Run `chezmoi diff` before applying to preview changes.
+
+**Need to reset?**  
+Your answers are in `~/.config/chezmoi/chezmoi.toml`. Delete it to start fresh on next apply.
+
+**Package won't install?**  
+Check the Brewfile syntax. Run `brew bundle --file=<path>` manually to see the error.
+
+**Script won't trigger?**  
+`run_once_` scripts track via hash. Delete `~/.local/share/chezmoi/.chezmoiscripts/.run-once-*` to force a rerun. `run_onchange_` scripts rerun when content changes — check the hash comment at the top.
+
 ## Adding new things
 
 **New dotfile** → Drop it in `home/` with the appropriate prefix (`dot_`, `private_`, `.tmpl`).
@@ -92,6 +157,6 @@ No conditionals inside Brewfiles - use separate files instead.
 
 **New platform setup** → Add `run_once_` script to `.chezmoiscripts/00-base/` with platform guard.
 
-**New base package** → Edit the Brewfile content in `.chezmoiscripts/10-packages/`.
+**New base package** → Edit the package list in `.chezmoiscripts/10-packages/` scripts (inline installation for immediate auto-install).
 
 Everything fits into one of a few categories. If it doesn't, rethink what you're adding.

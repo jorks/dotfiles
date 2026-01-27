@@ -46,9 +46,11 @@ These scripts are conservative and minimal. If it's not required for chezmoi or 
 
 Installs essential CLI packages via Homebrew (macOS) or apt (Linux). Things like `git`, `curl`, `jq`, `fzf`, `ripgrep` - tools you need regardless of your specialty.
 
-Uses `run_onchange_` so the script reruns when the embedded Brewfile content changes. Add a package to the list, rerun `chezmoi apply`, it gets installed. No manual intervention.
+Uses `run_onchange_` so the script reruns when the package list changes. Add a package to the list, rerun `chezmoi apply`, it gets installed. No manual intervention.
 
 Platform-specific variants exist (`*-macos.sh`, `*-linux.sh`) because package managers differ. The logic is the same, the package names occasionally aren't.
+
+**Note:** These use inline package installation loops rather than Brewfiles for immediate auto-install on first apply. See [STRUCTURE.md](../STRUCTURE.md#brewfiles) for rationale. Kits use proper Brewfiles.
 
 ## `20-shell/` – Shell setup
 
