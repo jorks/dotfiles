@@ -19,8 +19,8 @@ set -eu
 #   - User must log out and back in to see effect
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
 # Get zsh path
 ZSH_PATH="$(command -v zsh)"

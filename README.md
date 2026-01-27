@@ -36,16 +36,16 @@ After that, everything runs through `chezmoi apply`. Edit dotfiles, apply, done.
 
 ## Why you should fork this
 
-The structure is deliberately constrained. Dotfiles in `home/`, scripts in `.chezmoiscripts/`, packages in Brewfiles. Fork it, rip out my zsh setup, drop in your fish config, adjust the kits. The structure stays, your preferences slot in.
+The structure is deliberately constrained. Dotfiles in `home/`, scripts in `home/.chezmoiscripts/`, packages in Brewfiles. Fork it, rip out my zsh setup, drop in your fish config, adjust the kits. The structure stays, your preferences slot in.
 
 See [STRUCTURE.md](STRUCTURE.md) for architecture details and customization guide.
 
 ## Documentation
 
 - [**STRUCTURE.md**](STRUCTURE.md) – Architecture, customization, and design principles
-- [**home/README.md**](home/README.md) – Working with dotfiles day-to-day
-- [**.chezmoiscripts/README.md**](.chezmoiscripts/README.md) – Lifecycle scripts and bootstrap logic
-- [**home/dot_config/kits/README.md**](home/dot_config/kits/README.md) – Managing capability kits
+- [**docs/dotfiles.md**](docs/dotfiles.md) – Working with dotfiles day-to-day
+- [**docs/scripts.md**](docs/scripts.md) – Lifecycle scripts and bootstrap logic
+- [**docs/kits.md**](docs/kits.md) – Managing capability kits
 
 ## License
 

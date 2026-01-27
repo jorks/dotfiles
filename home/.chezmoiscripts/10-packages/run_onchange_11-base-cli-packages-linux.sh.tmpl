@@ -4,32 +4,33 @@ set -eu
 
 # -------------------------------------------------------------------
 # PURPOSE:
-#   Install base CLI packages on macOS via Homebrew
+#   Install base CLI packages on Linux via apt
 #
 # SCOPE:
-#   - Runs on: macOS only (excluded on Linux via .chezmoiignore)
+#   - Runs on: Linux only (excluded on macOS via .chezmoiignore)
 #   - Lifecycle: run_onchange (re-runs when package list changes)
 #
 # BEHAVIOUR:
-#   - Idempotent (brew handles already-installed packages)
+#   - Idempotent (apt handles already-installed packages)
 #   - Controlled by .install_base_cli config flag
+#   - Requires sudo
 #
 # NOTES:
 #   - Package list intentionally minimal (CLI tools only)
-#   - GUI apps belong in kits or separate scripts
-#   - KEEP IN SYNC with run_onchange_11-base-cli-packages-linux.sh.tmpl
+#   - Assumes apt (Ubuntu/Debian/Amazon Linux)
+#   - KEEP IN SYNC with run_onchange_10-base-cli-packages-macos.sh.tmpl
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
 # ┌─────────────────────────────────────────────────────────────────┐
 # │ BASE CLI PACKAGES                                               │
 # │                                                                 │
-# │ ⚠️  WARNING: Keep this list in sync with the Linux variant!    │
-# │    File: 10-packages/run_onchange_11-base-cli-packages-linux.sh.tmpl │
+# │ ⚠️  WARNING: Keep this list in sync with the macOS variant!    │
+# │    File: 10-packages/run_onchange_10-base-cli-packages-macos.sh.tmpl │
 # │                                                                 │
-# │ Package names may differ slightly (e.g., fd vs fd-find).       │
+# │ Some package names differ from macOS (e.g., fd-find vs fd).    │
 # │ This drift is acceptable - just keep intent aligned.           │
 # └─────────────────────────────────────────────────────────────────┘
 
@@ -40,24 +41,23 @@ PACKAGES="
   zsh
   fzf
   ripgrep
-  fd
+  fd-find
   jq
   neovim
   nano
   shellcheck
   tree
   htop
-  watch
-  bash
   git-delta
 "
 
-log_info "Installing base CLI packages via Homebrew..."
+log_info "Installing base CLI packages via apt (requires admin privileges)..."
+log_warn "You may be prompted for your password"
 
-# Install packages (brew handles already-installed gracefully)
+# Install packages (apt handles already-installed gracefully)
 for pkg in $PACKAGES; do
   log_info "Installing: $pkg"
-  if brew install "$pkg"; then
+  if sudo apt-get install -y "$pkg"; then
     log_success "$pkg installed"
   else
     log_warn "Failed to install $pkg (continuing)"

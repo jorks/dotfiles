@@ -18,8 +18,16 @@
 .chezmoiscripts/10-packages/run_onchange_11-base-cli-packages-linux.sh.tmpl
 {{- end }}
 
-{{- /* Exclude documentation files */ -}}
-.chezmoiscripts/README.md
-home/README.md
-home/dot_config/kits/README.md
-home/dot_config/kits/*/README.md
+{{- /* Exclude example / reference files */ -}}
+*.example
+*.example.*
+
+{{- /* Exclude local-only or private variants */ -}}
+*.local
+*.private
+
+{{- /* Exclude editor / OS noise */ -}}
+.DS_Store
+
+{{- /* Exclude source-only library infrastructure */ -}}
+_lib

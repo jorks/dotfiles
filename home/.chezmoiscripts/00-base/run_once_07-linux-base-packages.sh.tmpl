@@ -20,8 +20,8 @@ set -eu
 #   - Must run before any other package installations
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
 log_info "Installing base system packages (requires admin privileges)..."
 log_warn "You may be prompted for your password"

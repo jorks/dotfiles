@@ -32,7 +32,7 @@ This happens automatically during `chezmoi apply`. Change a kit's Brewfile, reru
 ### devtools
 Docker, compilers, language runtimes, build tools.  
 **Use case:** Machines where you write code.  
-See [devtools/README.md](devtools/README.md) for package list.
+See [kits-devtools.md](kits-devtools.md) for package list.
 
 ### productivity
 Browsers, communication apps, utilities.  
@@ -52,7 +52,7 @@ Currently empty — add tools like Jamf Helper, AutoPkg, etc.
 ### fonts
 Design fonts and bonus coding fonts.  
 **Use case:** Typography nerds.  
-See [fonts/README.md](fonts/README.md) for full font list.
+See [kits-fonts.md](kits-fonts.md) for full font list.
 
 ## Creating a new kit
 

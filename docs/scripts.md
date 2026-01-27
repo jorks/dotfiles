@@ -92,7 +92,7 @@ Pure functions sourced by scripts in other directories. Not executable on their 
 
 **`checks.sh`** – Common checks like "is this macOS?", "is Homebrew installed?", etc.
 
-Keeps script logic DRY. Scripts source what they need at the top: `source "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"`.
+Keeps script logic DRY. Scripts source what they need at the top: `. "{{ .chezmoi.sourceDir }}/_lib/log.sh"`.
 
 ## Writing new scripts
 

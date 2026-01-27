@@ -19,8 +19,8 @@ set -eu
 #   - Required for x86_64 compatibility layer
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
 # Check if running on ARM
 if [ "$(uname -m)" != "arm64" ]; then

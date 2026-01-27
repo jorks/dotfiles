@@ -19,8 +19,8 @@ set -eu
 #   - User must manually accept license in GUI dialog
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
 # Check if already installed
 if xcode-select -p >/dev/null 2>&1; then

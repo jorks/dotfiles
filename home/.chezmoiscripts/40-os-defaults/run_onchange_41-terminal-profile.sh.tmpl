@@ -21,8 +21,8 @@ set -eu
 #   - Changes apply to new Terminal windows immediately
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
 PROFILE_FILE="{{ .chezmoi.homeDir }}/.config/terminal/macos.terminal"
 PROFILE_NAME="Custom"  # Default name - extracted from file if possible

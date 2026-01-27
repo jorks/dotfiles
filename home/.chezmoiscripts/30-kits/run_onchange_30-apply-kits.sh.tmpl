@@ -22,10 +22,10 @@ set -eu
 #   - This is an orchestrator only - kits manage their own logic
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
-# shellcheck source=../_lib/brew.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/brew.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+# shellcheck source=../../_lib/brew.sh
+. "{{ .chezmoi.sourceDir }}/_lib/brew.sh"
 
 KITS_DIR="{{ .chezmoi.homeDir }}/.config/kits"
 

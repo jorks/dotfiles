@@ -20,8 +20,8 @@ set -eu
 #   - Plugins installed separately
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
 # Check if already installed
 if [ -d "$HOME/.oh-my-zsh" ]; then

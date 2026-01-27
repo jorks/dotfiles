@@ -19,8 +19,8 @@ set -eu
 #   - Installs to /opt/homebrew (Apple Silicon) or /usr/local (Intel)
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
 # Check if Homebrew already installed
 if command -v brew >/dev/null 2>&1; then

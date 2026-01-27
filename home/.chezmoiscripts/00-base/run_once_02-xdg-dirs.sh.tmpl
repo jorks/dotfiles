@@ -19,8 +19,8 @@ set -eu
 #   - Follows XDG Base Directory Specification
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
 # Set XDG defaults (standard locations)
 # These exports ensure subsequent scripts in this apply session can reference XDG paths.

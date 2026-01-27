@@ -18,8 +18,8 @@ set -eu
 #   - Focuses only on unchangeable prerequisites
 # -------------------------------------------------------------------
 
-# shellcheck source=../_lib/log.sh
-. "{{ .chezmoi.sourceDir }}/.chezmoiscripts/_lib/log.sh"
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
 # Verify not running as root
 if [ "$(id -u)" -eq 0 ]; then
