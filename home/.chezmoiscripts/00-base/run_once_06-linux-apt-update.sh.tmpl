@@ -20,6 +20,11 @@ set -eu
 #   - Ensures package manager is current before installations
 # -------------------------------------------------------------------
 
+{{- if ne .chezmoi.os "linux" }}
+# Not Linux, skip
+exit 0
+{{- end }}
+
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 

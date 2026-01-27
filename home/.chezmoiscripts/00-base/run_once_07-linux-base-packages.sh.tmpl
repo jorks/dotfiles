@@ -20,6 +20,11 @@ set -eu
 #   - Must run before any other package installations
 # -------------------------------------------------------------------
 
+{{- if ne .chezmoi.os "linux" }}
+# Not Linux, skip
+exit 0
+{{- end }}
+
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
