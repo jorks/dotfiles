@@ -20,13 +20,13 @@ set -eu
 #   - Changes apply to new Terminal windows immediately
 # -------------------------------------------------------------------
 
-{{- if ne .chezmoi.os "darwin" }}
-# Not macOS, skip
-exit 0
-{{- end }}
-
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+{{- if ne .chezmoi.os "darwin" }}
+log_info "Skipping: not running on macOS"
+exit 0
+{{- end }}
 
 PROFILE_FILE="{{ .chezmoi.homeDir }}/.config/terminal/macos.terminal"
 PROFILE_NAME="Custom"  # Default name - extracted from file if possible

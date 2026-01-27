@@ -74,7 +74,7 @@ Sets macOS system defaults. Keyboard repeat rates, Dock behavior, Finder prefere
 
 Uses `run_once_` because these settings rarely change and don't need to be reapplied constantly. Safe to rerun if needed.
 
-macOS-only. Ignored on Linux via `.chezmoiignore`.
+macOS-only. Scripts check the OS at runtime and exit early if not on macOS.
 
 ## `90-debug/` – Diagnostics
 
@@ -104,7 +104,32 @@ Use the right prefix:
 
 Number them appropriately. If it depends on Homebrew, it goes after `05-macos-homebrew.sh`. If it installs packages, it probably belongs in `10-packages/` or a kit.
 
-Template them (`.tmpl` suffix) if they need user data or platform conditionals. Guard platform-specific scripts with `{{- if eq .chezmoi.os "darwin" }}` at the top and `{{- end }}` at the bottom.
+### OS-specific scripts
+
+Template them (`.tmpl` suffix) if they need user data or platform conditionals. For OS-specific scripts, use this pattern:
+
+```bash
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# ... header comments ...
+# -------------------------------------------------------------------
+
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+{{- if ne .chezmoi.os "darwin" }}
+log_info "Skipping: not running on macOS"
+exit 0
+{{- end }}
+
+# ... rest of script ...
+```
+
+**Important:** The shebang (`#!/usr/bin/env sh`) MUST be on line 1. Template conditionals that appear before it will cause "exec format error". Always source libraries before OS checks so you can use log functions in skip messages.
+
+**Note:** `.chezmoiignore` does NOT prevent script execution. Scripts in `.chezmoiscripts/` are always executed during `chezmoi apply`. OS filtering happens via the in-script checks shown above.
 
 Source shared functions from `_lib/` rather than duplicating logic. Log what you're doing so users understand what's happening during apply.
 

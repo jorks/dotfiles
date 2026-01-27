@@ -1,0 +1,22 @@
+# =====================================================================
+# OS-SPECIFIC SCRIPT EXECUTION
+# =====================================================================
+# Scripts in .chezmoiscripts/ are controlled by in-script OS checks,
+# NOT by .chezmoiignore patterns. Each script checks the OS at runtime
+# and exits early if not appropriate. See individual script headers
+# for details on their platform requirements.
+# =====================================================================
+
+# Exclude example / reference files
+*.example
+*.example.*
+
+# Exclude local-only or private variants
+*.local
+*.private
+
+# Exclude editor / OS noise
+.DS_Store
+
+# Exclude source-only library infrastructure
+_lib

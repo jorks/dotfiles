@@ -23,9 +23,13 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+{{- if ne .chezmoi.os "linux" }}
+log_info "Skipping: not running on Linux"
+exit 0
+{{- end }}
+
 {{- if not .install_base_cli }}
-# Config flag disabled
-log_info "Base CLI packages installation disabled (install_base_cli=false)"
+log_info "Skipping: base CLI packages installation disabled (install_base_cli=false)"
 exit 0
 {{- end }}
 

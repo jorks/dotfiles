@@ -22,7 +22,7 @@ dotfiles/
 │
 └── home/                        # chezmoi source root (maps to $HOME)
     ├── .chezmoi.toml.tmpl       # user prompts (name, email, enabled kits)
-    ├── .chezmoiignore.tmpl      # files excluded from apply
+    ├── .chezmoiignore           # files excluded from apply
     │
     ├── _lib/                    # source-only script libraries (never applied)
     │   ├── log.sh               # logging helpers with color support
@@ -75,7 +75,7 @@ Scripts source these libraries during execution using `{{ .chezmoi.sourceDir }}/
 
 **Why not in `.chezmoiscripts/_lib/`?** Chezmoi executes everything in `.chezmoiscripts/` as scripts. Non-executable files (like sourced libraries) cause "not a script" errors. Libraries must live outside `.chezmoiscripts/` as source-only infrastructure.
 
-The `_lib/` directory is explicitly listed in `.chezmoiignore.tmpl` to prevent application to target.
+The `_lib/` directory is explicitly listed in `.chezmoiignore` to prevent application to target.
 
 ### `home/.chezmoiscripts/` – lifecycle automation
 
@@ -123,9 +123,9 @@ Both work. Choose what fits your muscle memory.
 
 ## Platform differences
 
-Handled via chezmoi conditionals and `home/.chezmoiignore.tmpl`. macOS-only scripts use platform guards (`{{- if eq .chezmoi.os "darwin" }}`). Linux equivalents exist where needed.
+Handled via in-script OS checks. macOS-only scripts check the OS at runtime and exit early if not appropriate. Linux equivalents exist where needed.
 
-Separate files for separate platforms. No branching logic. Let chezmoi decide what applies.
+Separate files for separate platforms. No branching logic within scripts - early exit on OS mismatch.
 
 ## Brewfiles
 

@@ -93,7 +93,7 @@ Use chezmoi conditionals in `.tmpl` files:
 {{- end }}
 ```
 
-Or use `.chezmoiignore.tmpl` to exclude entire files on certain platforms.
+Or use `.chezmoiignore` to exclude entire files/directories from being copied to `$HOME` on certain platforms. Note that `.chezmoiignore` only affects files copied to your home directory - it does NOT prevent scripts in `.chezmoiscripts/` from running. Scripts handle OS filtering internally.
 
 ## What belongs here
 

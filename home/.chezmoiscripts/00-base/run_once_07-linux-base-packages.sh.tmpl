@@ -20,13 +20,13 @@ set -eu
 #   - Must run before any other package installations
 # -------------------------------------------------------------------
 
-{{- if ne .chezmoi.os "linux" }}
-# Not Linux, skip
-exit 0
-{{- end }}
-
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+{{- if ne .chezmoi.os "linux" }}
+log_info "Skipping: not running on Linux"
+exit 0
+{{- end }}
 
 log_info "Installing base system packages (requires admin privileges)..."
 log_warn "You may be prompted for your password"

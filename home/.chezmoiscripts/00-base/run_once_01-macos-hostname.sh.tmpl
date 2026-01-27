@@ -22,10 +22,13 @@ set -eu
 {{- end }}
 # -------------------------------------------------------------------
 
-{{- if eq .chezmoi.os "darwin" }}
-
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+{{- if ne .chezmoi.os "darwin" }}
+log_info "Skipping: not running on macOS"
+exit 0
+{{- end }}
 
 CURRENT_HOSTNAME="$(hostname)"
 
@@ -72,8 +75,4 @@ log_warn "Changes take effect immediately for new shells"
 log_info "Hostname: $CURRENT_HOSTNAME"
 log_warn "This is a work computer - hostname is managed by IT and cannot be changed"
 
-{{- end }}
-{{- else }}
-# Not macOS, skip
-exit 0
 {{- end }}

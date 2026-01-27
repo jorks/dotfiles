@@ -21,13 +21,13 @@ set -eu
 #   - Change the font list here and chezmoi will re-run
 # -------------------------------------------------------------------
 
-{{- if ne .chezmoi.os "darwin" }}
-# Not macOS, skip
-exit 0
-{{- end }}
-
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+{{- if ne .chezmoi.os "darwin" }}
+log_info "Skipping: not running on macOS"
+exit 0
+{{- end }}
 
 log_info "Installing essential coding fonts..."
 
