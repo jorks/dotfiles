@@ -1,4 +1,3 @@
-{{- if eq .chezmoi.os "darwin" }}
 #!/usr/bin/env sh
 set -eu
 
@@ -22,6 +21,8 @@ set -eu
 #   - Work computer detected - hostname is managed, no changes allowed
 {{- end }}
 # -------------------------------------------------------------------
+
+{{- if eq .chezmoi.os "darwin" }}
 
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
@@ -72,4 +73,7 @@ log_info "Hostname: $CURRENT_HOSTNAME"
 log_warn "This is a work computer - hostname is managed by IT and cannot be changed"
 
 {{- end }}
+{{- else }}
+# Not macOS, skip
+exit 0
 {{- end }}

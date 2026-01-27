@@ -1,4 +1,3 @@
-{{- if eq .chezmoi.os "darwin" }}
 #!/usr/bin/env sh
 set -eu
 
@@ -21,6 +20,11 @@ set -eu
 #   - setup.sh is optional (only for outliers beyond packages)
 #   - This is an orchestrator only - kits manage their own logic
 # -------------------------------------------------------------------
+
+{{- if ne .chezmoi.os "darwin" }}
+# Not macOS, skip
+exit 0
+{{- end }}
 
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
@@ -87,4 +91,3 @@ if [ "$APPLIED_COUNT" -eq 0 ]; then
 else
   log_success "Applied $APPLIED_COUNT kit(s)"
 fi
-{{- end }}
