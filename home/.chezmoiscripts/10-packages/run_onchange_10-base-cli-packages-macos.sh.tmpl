@@ -21,6 +21,8 @@ set -eu
 
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+# shellcheck source=../../_lib/brew.sh
+. "{{ .chezmoi.sourceDir }}/_lib/brew.sh"
 
 {{- if ne .chezmoi.os "darwin" }}
 log_info "Skipping: not running on macOS"

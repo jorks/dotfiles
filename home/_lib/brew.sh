@@ -8,9 +8,23 @@
 #
 # BEHAVIOUR:
 #   - Pure functions
-#   - Assumes Homebrew is already installed
+#   - Ensures Homebrew is in PATH before use
 #   - Handles missing Brewfiles gracefully
 # -------------------------------------------------------------------
+
+# -------------------------------------------------------------------
+# Ensure Homebrew is in PATH for this session
+# -------------------------------------------------------------------
+# Each chezmoi script runs in a new subprocess, so PATH from
+# previous scripts doesn't persist. This ensures brew is available
+# even immediately after Homebrew installation.
+if [ -z "$(command -v brew)" ]; then
+  if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+fi
 
 # Apply a Brewfile idempotently
 # Usage: apply_brewfile /path/to/Brewfile
