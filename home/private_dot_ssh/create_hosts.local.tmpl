@@ -9,6 +9,16 @@
 # Use this file for personal, environment-specific, or sensitive SSH hosts.
 # It is included from ~/.ssh/config.
 #
+# CHEZMOI WORKFLOW
+# ----------------
+# This file uses chezmoi's native `create_` prefix, which means:
+# - It will be created on first apply if it doesn't exist
+# - Once created, it will never be overwritten by chezmoi
+# - You can edit ~/.ssh/hosts.local directly and your changes are safe
+#
+# The `create_` prefix is the native chezmoi way to handle "apply once" files.
+# No manual ignore list management needed!
+#
 # Start by uncommenting and customising entries as needed.
 
 # -------------------------------------------------------------------

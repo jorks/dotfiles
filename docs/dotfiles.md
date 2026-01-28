@@ -12,6 +12,7 @@ Chezmoi uses prefixes to control how files are applied:
 - `private_dot_ssh/` → `~/.ssh/` (mode 0600/0700)
 - `dot_gitconfig.tmpl` → `~/.gitconfig` (rendered with user data first)
 - `dot_config/` → `~/.config/`
+- `create_filename` → creates file only if it doesn't exist (won't overwrite)
 
 Templates (`.tmpl` suffix) are rendered before apply. Reference user data with `{{ .git_name }}` or `{{ .kits.devtools }}`. Values come from `.chezmoi.toml` prompts.
 

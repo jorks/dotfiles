@@ -194,7 +194,7 @@ Check the Brewfile syntax. Run `brew bundle --file=<path>` manually to see the e
 
 ## Adding new things
 
-**New dotfile** → Drop it in `home/` with the appropriate prefix (`dot_`, `private_`, `.tmpl`).
+**New dotfile** → Drop it in `home/` with the appropriate prefix (`dot_`, `private_`, `create_`, `.tmpl`).
 
 **New kit** → Create `home/dot_config/kits/<name>/Brewfile`, add prompt to `home/.chezmoi.toml.tmpl`. The orchestrator handles the rest. Add optional `setup.sh` for post-install config.
 
