@@ -24,15 +24,19 @@ set -eu
 # shellcheck source=../../_lib/brew.sh
 . "{{ .chezmoi.sourceDir }}/_lib/brew.sh"
 
+SCRIPT_NAME="10-packages/10-base-cli-packages-macos.sh"
+
 {{- if ne .chezmoi.os "darwin" }}
-log_info "Skipping: not running on macOS"
+log_script_skip "$SCRIPT_NAME" "not macOS"
 exit 0
 {{- end }}
 
 {{- if not .install_base_cli }}
-log_info "Skipping: base CLI packages installation disabled (install_base_cli=false)"
+log_script_skip "$SCRIPT_NAME" "install_base_cli=false"
 exit 0
 {{- end }}
+
+log_script_start "$SCRIPT_NAME"
 
 # ┌─────────────────────────────────────────────────────────────────┐
 # │ BASE CLI PACKAGES                                               │
@@ -76,3 +80,4 @@ for pkg in $PACKAGES; do
 done
 
 log_success "Base CLI packages installed"
+log_script_end "$SCRIPT_NAME"

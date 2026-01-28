@@ -26,16 +26,21 @@ set -eu
 # shellcheck source=../../_lib/brew.sh
 . "{{ .chezmoi.sourceDir }}/_lib/brew.sh"
 
+SCRIPT_NAME="30-kits/30-apply-kits.sh"
+
 {{- if ne .chezmoi.os "darwin" }}
-log_info "Skipping: not running on macOS"
+log_script_skip "$SCRIPT_NAME" "not macOS"
 exit 0
 {{- end }}
+
+log_script_start "$SCRIPT_NAME"
 
 KITS_DIR="{{ .chezmoi.homeDir }}/.config/kits"
 
 # Check if kits directory exists
 if [ ! -d "$KITS_DIR" ]; then
   log_warn "Kits directory not found: $KITS_DIR"
+  log_script_end "$SCRIPT_NAME"
   exit 0
 fi
 
@@ -63,6 +68,7 @@ else
       APPLIED_COUNT=$((APPLIED_COUNT + 1))
     else
       log_error "Kit Brewfile failed: $KIT_NAME"
+      log_script_end "$SCRIPT_NAME"
       exit 1
     fi
   else
@@ -77,6 +83,7 @@ else
       log_success "Setup complete: $KIT_NAME"
     else
       log_error "Setup failed: $KIT_NAME"
+      log_script_end "$SCRIPT_NAME"
       exit 1
     fi
   fi
@@ -91,3 +98,5 @@ if [ "$APPLIED_COUNT" -eq 0 ]; then
 else
   log_success "Applied $APPLIED_COUNT kit(s)"
 fi
+
+log_script_end "$SCRIPT_NAME"

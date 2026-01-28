@@ -23,10 +23,14 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="40-os-defaults/41-terminal-profile.sh"
+
 {{- if ne .chezmoi.os "darwin" }}
-log_info "Skipping: not running on macOS"
+log_script_skip "$SCRIPT_NAME" "not macOS"
 exit 0
 {{- end }}
+
+log_script_start "$SCRIPT_NAME"
 
 PROFILE_FILE="{{ .chezmoi.homeDir }}/.config/terminal/macos.terminal"
 PROFILE_NAME="Custom"  # Default name - extracted from file if possible
@@ -34,6 +38,7 @@ PROFILE_NAME="Custom"  # Default name - extracted from file if possible
 # Check if profile file exists
 if [ ! -f "$PROFILE_FILE" ]; then
   log_warn "Terminal profile not found: $PROFILE_FILE (skipping)"
+  log_script_end "$SCRIPT_NAME"
   exit 0
 fi
 
@@ -53,6 +58,7 @@ CURRENT_DEFAULT="$(defaults read com.apple.Terminal "Default Window Settings" 2>
 
 if [ "$CURRENT_DEFAULT" = "$PROFILE_NAME" ]; then
   log_info "Terminal profile already set as default: $PROFILE_NAME"
+  log_script_end "$SCRIPT_NAME"
   exit 0
 fi
 
@@ -63,6 +69,7 @@ if open "$PROFILE_FILE"; then
   log_success "Profile imported"
 else
   log_error "Failed to import profile"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi
 
@@ -76,3 +83,4 @@ defaults write com.apple.Terminal "Startup Window Settings" -string "$PROFILE_NA
 
 log_success "Terminal profile configured: $PROFILE_NAME"
 log_warn "Changes apply to new Terminal windows"
+log_script_end "$SCRIPT_NAME"

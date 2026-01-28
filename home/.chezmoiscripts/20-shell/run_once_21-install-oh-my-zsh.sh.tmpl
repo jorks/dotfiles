@@ -23,9 +23,13 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="20-shell/21-install-oh-my-zsh.sh"
+log_script_start "$SCRIPT_NAME"
+
 # Check if already installed
 if [ -d "$HOME/.oh-my-zsh" ]; then
   log_info "Oh My Zsh already installed"
+  log_script_end "$SCRIPT_NAME"
   exit 0
 fi
 
@@ -37,7 +41,9 @@ log_info "Installing Oh My Zsh..."
 # KEEP_ZSHRC=yes - Don't overwrite .zshrc (chezmoi manages it)
 if RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; then
   log_success "Oh My Zsh installed"
+  log_script_end "$SCRIPT_NAME"
 else
   log_error "Oh My Zsh installation failed"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi

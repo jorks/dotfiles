@@ -26,10 +26,14 @@ set -eu
 # shellcheck source=../../_lib/brew.sh
 . "{{ .chezmoi.sourceDir }}/_lib/brew.sh"
 
+SCRIPT_NAME="10-packages/12-fonts-essentials.sh"
+
 {{- if ne .chezmoi.os "darwin" }}
-log_info "Skipping: not running on macOS"
+log_script_skip "$SCRIPT_NAME" "not macOS"
 exit 0
 {{- end }}
+
+log_script_start "$SCRIPT_NAME"
 
 log_info "Installing essential coding fonts..."
 
@@ -50,3 +54,4 @@ for font in $FONTS; do
 done
 
 log_success "Essential coding fonts installed"
+log_script_end "$SCRIPT_NAME"

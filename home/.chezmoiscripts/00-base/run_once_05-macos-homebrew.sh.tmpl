@@ -22,9 +22,13 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="00-base/05-macos-homebrew.sh"
+log_script_start "$SCRIPT_NAME"
+
 # Check if Homebrew already installed
 if command -v brew >/dev/null 2>&1; then
   log_info "Homebrew already installed at: $(command -v brew)"
+  log_script_end "$SCRIPT_NAME"
   exit 0
 fi
 
@@ -35,6 +39,7 @@ if NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com
   log_success "Homebrew installed"
 else
   log_error "Homebrew installation failed"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi
 
@@ -46,3 +51,4 @@ elif [ -x /usr/local/bin/brew ]; then
 fi
 
 log_success "Homebrew ready"
+log_script_end "$SCRIPT_NAME"

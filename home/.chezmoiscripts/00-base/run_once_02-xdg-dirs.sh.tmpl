@@ -22,6 +22,9 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="00-base/02-xdg-dirs.sh"
+log_script_start "$SCRIPT_NAME"
+
 # Set XDG defaults (standard locations)
 # These exports ensure subsequent scripts in this apply session can reference XDG paths.
 # User shells get these from ~/.config/shell/xdg.zsh instead.
@@ -39,3 +42,4 @@ for xdg_dir in "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_CACHE
 done
 
 log_success "XDG directories ready"
+log_script_end "$SCRIPT_NAME"

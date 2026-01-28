@@ -21,16 +21,29 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="00-base/00-preflight.sh"
+
+# Session header (this is the first script in every chezmoi apply)
+log_info ""
+log_info "╔═══════════════════════════════════════════════════════════════╗"
+log_info "║              chezmoi apply started                            ║"
+log_info "╚═══════════════════════════════════════════════════════════════╝"
+
+log_script_start "$SCRIPT_NAME"
+
 # Verify not running as root
 if [ "$(id -u)" -eq 0 ]; then
   log_error "Do not run as root. Run as your normal user (sudo will be requested when needed)"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi
 
 # Verify HOME is writable
 if [ ! -w "$HOME" ]; then
   log_error "HOME directory is not writable: $HOME"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi
 
 log_success "Preflight checks passed"
+log_script_end "$SCRIPT_NAME"

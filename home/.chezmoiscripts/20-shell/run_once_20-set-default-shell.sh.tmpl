@@ -22,17 +22,22 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="20-shell/20-set-default-shell.sh"
+log_script_start "$SCRIPT_NAME"
+
 # Get zsh path
 ZSH_PATH="$(command -v zsh)"
 
 if [ -z "$ZSH_PATH" ]; then
   log_error "zsh not found in PATH - install it first"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi
 
 # Check if already default
 if [ "$SHELL" = "$ZSH_PATH" ]; then
   log_info "zsh already set as default shell"
+  log_script_end "$SCRIPT_NAME"
   exit 0
 fi
 
@@ -43,7 +48,9 @@ log_warn "Changes take effect on next login"
 # Change default shell
 if chsh -s "$ZSH_PATH"; then
   log_success "Default shell set to zsh"
+  log_script_end "$SCRIPT_NAME"
 else
   log_error "Failed to change default shell"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi

@@ -23,10 +23,14 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="00-base/06-linux-apt-update.sh"
+
 {{- if ne .chezmoi.os "linux" }}
-log_info "Skipping: not running on Linux"
+log_script_skip "$SCRIPT_NAME" "not Linux"
 exit 0
 {{- end }}
+
+log_script_start "$SCRIPT_NAME"
 
 log_info "Updating apt package lists (requires admin privileges)..."
 log_warn "You may be prompted for your password"
@@ -34,6 +38,7 @@ log_warn "You may be prompted for your password"
 # Update package lists
 if ! sudo apt-get update; then
   log_error "Failed to update package lists"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi
 
@@ -42,7 +47,9 @@ log_info "Upgrading installed packages..."
 # Upgrade packages (non-interactive)
 if sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y; then
   log_success "System packages updated"
+  log_script_end "$SCRIPT_NAME"
 else
   log_error "Failed to upgrade packages"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi

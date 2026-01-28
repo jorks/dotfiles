@@ -22,9 +22,13 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="00-base/03-macos-xcode-clt.sh"
+log_script_start "$SCRIPT_NAME"
+
 # Check if already installed
 if xcode-select -p >/dev/null 2>&1; then
   log_info "Xcode Command Line Tools already installed"
+  log_script_end "$SCRIPT_NAME"
   exit 0
 fi
 
@@ -43,7 +47,9 @@ done
 # Verify
 if xcode-select -p >/dev/null 2>&1; then
   log_success "Xcode Command Line Tools installed"
+  log_script_end "$SCRIPT_NAME"
 else
   log_error "Installation verification failed"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi

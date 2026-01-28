@@ -22,15 +22,20 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="00-base/04-macos-rosetta.sh"
+log_script_start "$SCRIPT_NAME"
+
 # Check if running on ARM
 if [ "$(uname -m)" != "arm64" ]; then
   log_info "Rosetta not needed on Intel Mac"
+  log_script_end "$SCRIPT_NAME"
   exit 0
 fi
 
 # Check if already installed
 if /usr/bin/pgrep -q oahd || [ -f /Library/Apple/usr/share/rosetta/rosetta ]; then
   log_info "Rosetta already installed"
+  log_script_end "$SCRIPT_NAME"
   exit 0
 fi
 
@@ -40,7 +45,9 @@ log_warn "You may be prompted for your password"
 # Install with automatic license agreement
 if sudo softwareupdate --install-rosetta --agree-to-license; then
   log_success "Rosetta 2 installed"
+  log_script_end "$SCRIPT_NAME"
 else
   log_error "Rosetta installation failed"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi

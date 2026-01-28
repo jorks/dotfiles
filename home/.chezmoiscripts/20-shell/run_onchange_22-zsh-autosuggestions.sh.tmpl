@@ -22,6 +22,9 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="20-shell/22-zsh-autosuggestions.sh"
+log_script_start "$SCRIPT_NAME"
+
 # Determine custom plugins directory
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 PLUGIN_DIR="$ZSH_CUSTOM/plugins/zsh-autosuggestions"
@@ -33,6 +36,7 @@ if [ -d "$PLUGIN_DIR" ]; then
   log_info "Updating zsh-autosuggestions..."
   cd "$PLUGIN_DIR" && git pull --quiet
   log_success "zsh-autosuggestions updated"
+  log_script_end "$SCRIPT_NAME"
   exit 0
 fi
 
@@ -41,7 +45,9 @@ log_info "Installing zsh-autosuggestions..."
 # Clone plugin
 if git clone --quiet https://github.com/zsh-users/zsh-autosuggestions "$PLUGIN_DIR"; then
   log_success "zsh-autosuggestions installed"
+  log_script_end "$SCRIPT_NAME"
 else
   log_error "Failed to install zsh-autosuggestions"
+  log_script_end "$SCRIPT_NAME"
   exit 1
 fi
