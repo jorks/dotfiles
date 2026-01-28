@@ -23,7 +23,7 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
-SCRIPT_NAME="40-os-defaults/41-terminal-profile.sh"
+SCRIPT_NAME="40-os-defaults/41-macos-terminal-profile.sh"
 
 {{- if ne .chezmoi.os "darwin" }}
 log_script_skip "$SCRIPT_NAME" "not macOS"
@@ -44,8 +44,8 @@ fi
 
 # Try to extract profile name from the .terminal file (it's a plist)
 if command -v plutil >/dev/null 2>&1; then
-  # Extract the first key from the plist (this is typically the profile name)
-  EXTRACTED_NAME="$(plutil -extract 'Window Settings' xml1 -o - "$PROFILE_FILE" 2>/dev/null | grep -A 1 '<key>' | head -2 | tail -1 | sed 's/.*<key>\(.*\)<\/key>.*/\1/' || echo "")"
+  # Extract the 'name' key from the plist
+  EXTRACTED_NAME="$(plutil -extract 'name' raw -o - "$PROFILE_FILE" 2>/dev/null || echo "")"
 
   if [ -n "$EXTRACTED_NAME" ]; then
     PROFILE_NAME="$EXTRACTED_NAME"
