@@ -4,28 +4,14 @@
 # -------
 # Shared Git configuration.
 #
-# This file:
-# - Contains portable settings used across macOS and Linux
-# - Excludes identity- and machine-specific configuration
-#
-# Notes:
-# - Identity-specific settings live in ~/.gitconfig.local
-# - Values wrapped in "{{" .value "}}" are prompted by chezmoi at apply time
-
-# -------------------------------------------------------------------
-# Identity (name/email only)
-# -------------------------------------------------------------------
-
-[user]
-  name = {{ .git_name }}
-  email = {{ .git_email }}
+# This file contains portable settings used across macOS and Linux.
+# Identity and machine-specific settings live in ~/.gitconfig.local
 
 # -------------------------------------------------------------------
 # Core behaviour
 # -------------------------------------------------------------------
 
 [core]
-  editor = {{ .editor }}
   excludesfile = ~/.gitignore_global
   attributesfile = ~/.gitattributes
   pager = delta
@@ -89,7 +75,7 @@
   last = log -1 HEAD
 
 # -------------------------------------------------------------------
-# Git LFS (safe everywhere)
+# Git LFS
 # -------------------------------------------------------------------
 
 [filter "lfs"]
@@ -98,11 +84,10 @@
   required = true
   clean = git-lfs clean -- %f
 
-{{- if eq .chezmoi.os "darwin" }}
-
 # -------------------------------------------------------------------
 # macOS: SSH commit signing via 1Password
 # -------------------------------------------------------------------
+# Note: Actual signingkey is set in ~/.gitconfig.local
 
 [gpg]
   format = ssh
@@ -114,10 +99,8 @@
 [commit]
   gpgsign = true
 
-{{- end }}
-
 # -------------------------------------------------------------------
-# Optional local overrides (NOT in git)
+# Local overrides (machine-specific, not in git)
 # -------------------------------------------------------------------
 
 [include]

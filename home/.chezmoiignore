@@ -15,9 +15,10 @@
 *.local
 *.private
 
-# Exception: Allow hosts.local to be created once (uses create_ prefix)
-# The create_ prefix ensures it won't be overwritten after initial creation
+# Exceptions: Allow these .local files to be created once (use create_ prefix)
+# The create_ prefix ensures they won't be overwritten after initial creation
 !.ssh/hosts.local
+!.gitconfig.local
 
 # Exclude editor / OS noise
 .DS_Store

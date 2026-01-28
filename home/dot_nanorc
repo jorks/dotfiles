@@ -4,6 +4,8 @@
 ## -------
 ## Sensible, low-friction defaults for Nano.
 ## Optimised for server use and quick edits.
+##
+## Note: Requires modern nano (5.0+). Install via Homebrew on macOS.
 
 # -------------------------------------------------------------------
 # UI / usability
@@ -18,9 +20,6 @@ set constantshow
 # Enable mouse support (works in most terminals)
 set mouse
 
-# Use smooth scrolling
-set smooth
-
 # Better visibility
 set titlecolor brightwhite,blue
 set statuscolor brightwhite,black
@@ -30,8 +29,8 @@ set errorcolor brightwhite,red
 # Editing behaviour
 # -------------------------------------------------------------------
 
-# Don’t auto-wrap long lines
-unset softwrap
+# Wrap long lines visually (don't insert newlines)
+set softwrap
 
 # Use spaces instead of tabs
 set tabstospaces
@@ -42,43 +41,29 @@ set tabsize 2
 # Enable auto-indentation
 set autoindent
 
-# Allow undo/redo
-set undo
-
 # -------------------------------------------------------------------
 # Search
 # -------------------------------------------------------------------
 
-# Case-insensitive search by default
-set ignorecase
-
-# But smart-case (capital letter makes it case-sensitive)
-set smartcase
+# Case-insensitive search by default (casesensitive is off)
+unset casesensitive
 
 # -------------------------------------------------------------------
 # File handling
 # -------------------------------------------------------------------
 
-# Back up files before saving (filename~)
-set backup
-
-# Store backups in the same directory
-set backupdir ""
-
-# Convert DOS/Mac line endings automatically
+# Allow opening multiple files
 set multibuffer
-
-# -------------------------------------------------------------------
-# Safety
-# -------------------------------------------------------------------
-
-# Ask before overwriting files
-set confirmoverwrite
 
 # -------------------------------------------------------------------
 # Syntax highlighting
 # -------------------------------------------------------------------
 
-# Load all available syntax definitions (if present)
+# Homebrew nano (Apple Silicon)
+include "/opt/homebrew/share/nano/*.nanorc"
+
+# Homebrew nano (Intel Mac)
+include "/usr/local/share/nano/*.nanorc"
+
+# Linux (Debian/Ubuntu/etc)
 include "/usr/share/nano/*.nanorc"
-include "/usr/share/nano/extra/*.nanorc"

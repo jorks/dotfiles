@@ -86,9 +86,15 @@ These aren't part of the normal apply lifecycle. They're here for convenience wh
 
 Pure functions sourced by scripts in other directories. Not executable on their own.
 
-**`log.sh`** – Logging wrappers with color and prefixes. `log_info`, `log_warn`, `log_error`, `log_success`.
+**`log.sh`** – Logging with color output and file logging. All logs are written to both console and `~/.local/state/chezmoi/apply.log`.
 
-**`brew.sh`** – Brewfile application logic. `apply_brewfile()` handles missing files, empty files, and errors gracefully.
+Available functions:
+- `log_info`, `log_warn`, `log_error`, `log_success` – Basic logging
+- `log_fatal` – Log error and exit (optional exit code as second arg)
+- `log_script_start`, `log_script_end` – Script lifecycle markers
+- `log_script_skip` – For OS-specific scripts that exit early
+
+**`brew.sh`** – Brewfile application logic. Ensures Homebrew is in PATH (critical since each chezmoi script runs in a new subprocess). `apply_brewfile()` handles missing files, empty files, and errors gracefully.
 
 **`checks.sh`** – Common checks like "is this macOS?", "is Homebrew installed?", etc.
 
@@ -119,19 +125,25 @@ set -eu
 # shellcheck source=../../_lib/log.sh
 . "{{ .chezmoi.sourceDir }}/_lib/log.sh"
 
+SCRIPT_NAME="00-base/my-script.sh"
+
 {{- if ne .chezmoi.os "darwin" }}
-log_info "Skipping: not running on macOS"
+log_script_skip "$SCRIPT_NAME" "not macOS"
 exit 0
 {{- end }}
 
-# ... rest of script ...
+log_script_start "$SCRIPT_NAME"
+
+# ... script logic ...
+
+log_script_end "$SCRIPT_NAME"
 ```
 
 **Important:** The shebang (`#!/usr/bin/env sh`) MUST be on line 1. Template conditionals that appear before it will cause "exec format error". Always source libraries before OS checks so you can use log functions in skip messages.
 
 **Note:** `.chezmoiignore` does NOT prevent script execution. Scripts in `.chezmoiscripts/` are always executed during `chezmoi apply`. OS filtering happens via the in-script checks shown above.
 
-Source shared functions from `_lib/` rather than duplicating logic. Log what you're doing so users understand what's happening during apply.
+All scripts should use `log_script_start` / `log_script_end` for clear lifecycle visibility. This makes it easy to trace what ran during `chezmoi apply` by checking the log file at `~/.local/state/chezmoi/apply.log`.
 
 ## Notes on maintenance
 

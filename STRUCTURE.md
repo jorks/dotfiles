@@ -73,6 +73,11 @@ Shared shell functions used by scripts in `.chezmoiscripts/`. These files are **
 
 Scripts source these libraries during execution using `{{ .chezmoi.sourceDir }}/_lib/log.sh`, making them available at script runtime without polluting your home directory.
 
+**Available libraries:**
+- `log.sh` – Logging with color output and file logging to `~/.local/state/chezmoi/apply.log`
+- `brew.sh` – Homebrew PATH setup and Brewfile application
+- `checks.sh` – Platform and tool existence predicates
+
 **Why not in `.chezmoiscripts/_lib/`?** Chezmoi executes everything in `.chezmoiscripts/` as scripts. Non-executable files (like sourced libraries) cause "not a script" errors. Libraries must live outside `.chezmoiscripts/` as source-only infrastructure.
 
 The `_lib/` directory is explicitly listed in `.chezmoiignore` to prevent application to target.
@@ -176,6 +181,9 @@ A few architectural rules that make this system work:
 
 **Something looks wrong?**  
 Run `chezmoi doctor` to check your setup.
+
+**Want to see what ran?**  
+Check the log file at `~/.local/state/chezmoi/apply.log`. All script output is logged with timestamps.
 
 **Script failed?**  
 Chezmoi scripts are idempotent — safe to rerun. Fix the issue and `chezmoi apply` again.

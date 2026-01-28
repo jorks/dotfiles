@@ -1,0 +1,16 @@
+# ~/.gitconfig.local
+#
+# PURPOSE
+# -------
+# Machine-specific git configuration.
+#
+# This file is created once by chezmoi, then manually editable.
+# Use this for identity settings, signing keys, and local overrides.
+
+[user]
+  name = {{ .git_name }}
+  email = {{ .git_email }}
+  # signingkey = ssh-ed25519 AAAA...
+
+[core]
+  editor = {{ .editor }}
