@@ -1,18 +1,18 @@
 # Kits
 
-Kits are opt-in capability bundles — groups of related tools you might not want on every machine. Dev laptop gets Docker, personal machine skips it. Work machine gets VPN tools, homelab doesn't.
+Kits are opt-in capability bundles — groups of related tools you might not want on every machine. Dev laptop gets Docker and editors, personal machine skips it. Work machine gets IT tools, homelab doesn't.
 
 ## How kits work
 
-Each kit is just a Brewfile (list of packages) and optional `setup.sh` (for config that can't be declarative). They live in this directory and are discovered automatically by the kit orchestrator.
+Each kit is a Brewfile (list of packages) and optional `setup.sh.tmpl` (for config that can't be declarative). They live in `home/dot_config/kits/<name>/` and are discovered automatically by the kit orchestrator.
 
 ### Enabling kits
 
 On first `chezmoi apply`, you're prompted which kits to enable:
 
 ```bash
-Enable devtools kit? (Docker, compilers, dev tools) [y/N]: 
-Enable productivity kit? (Apps, utilities) [y/N]: 
+Enable devtools kit? (Editors, containers, terminals) [y/N]: 
+Enable productivity kit? (Browsers, communication, tasks) [y/N]: 
 ...
 ```
 
@@ -23,36 +23,18 @@ Your choices are stored in `~/.config/chezmoi/chezmoi.toml` and never committed.
 The `30-apply-kits.sh` orchestrator:
 1. Loops through enabled kits in your config
 2. Applies each kit's Brewfile via `brew bundle`
-3. Runs optional `setup.sh` if it exists
+3. Runs optional `setup.sh` if it exists (rendered from `setup.sh.tmpl`)
 
 This happens automatically during `chezmoi apply`. Change a kit's Brewfile, rerun apply, packages install.
 
-## Available kits
+## Example kits
 
-### devtools
-Docker, compilers, language runtimes, build tools.  
-**Use case:** Machines where you write code.  
-See [kits-devtools.md](kits-devtools.md) for package list.
+- **devtools** – Editors, terminals, containers, API tools. For machines where you write code.
+- **productivity** – Browsers, communication apps, task managers. Personal and work laptops.
+- **utilities** – Menu bar apps, window management, Quick Look extensions.
+- **php_dev / python_dev** – Language-specific tooling and IDEs.
 
-### productivity
-Browsers, communication apps, utilities.  
-**Use case:** Personal laptops, not servers.  
-Currently empty — add your preferred apps.
-
-### security
-VPNs, password managers, security tools.  
-**Use case:** Work machines.  
-Currently empty — add your required security stack.
-
-### macadmin
-IT/sysadmin tooling for Mac management.  
-**Use case:** Only if you're that kind of sysadmin.  
-Currently empty — add tools like Jamf Helper, AutoPkg, etc.
-
-### fonts
-Design fonts and bonus coding fonts.  
-**Use case:** Typography nerds.  
-See [kits-fonts.md](kits-fonts.md) for full font list.
+Browse `home/dot_config/kits/` to see all available kits and their Brewfiles.
 
 ## Creating a new kit
 
@@ -62,15 +44,18 @@ See [kits-fonts.md](kits-fonts.md) for full font list.
    touch home/dot_config/kits/mykit/Brewfile
    ```
 
-2. **Add packages to the Brewfile:**
+2. **Add packages to the Brewfile** (see `.cursor/rules.md` for format standards):
    ```ruby
-   # home/dot_config/kits/mykit/Brewfile
-   brew "package-name"
-   cask "app-name"
+   # My Kit
+   #
+   # Description of what this kit provides.
+
+   brew "package-name"                    # Brief description
+   cask "app-name"                        # Brief description
    ```
 
 3. **Add a prompt to `.chezmoi.toml.tmpl`:**
-   ```toml
+   ```
    {{- $kits_mykit := promptBoolOnce . "kits.mykit" "Enable mykit?" false -}}
    
    # In the [data.kits] section:
@@ -78,10 +63,9 @@ See [kits-fonts.md](kits-fonts.md) for full font list.
      mykit = {{ $kits_mykit }}
    ```
 
-4. **Optional: Add post-install config:**
+4. **Optional: Add post-install config** (use `.tmpl` for chezmoi templating):
    ```bash
-   touch home/dot_config/kits/mykit/setup.sh
-   chmod +x home/dot_config/kits/mykit/setup.sh
+   touch home/dot_config/kits/mykit/setup.sh.tmpl
    ```
 
 The orchestrator discovers it automatically. No code changes needed.
@@ -90,8 +74,6 @@ The orchestrator discovers it automatically. No code changes needed.
 
 **Keep kits focused.** A kit should represent a capability (dev tools, security stack) not a random collection of packages.
 
-**Use Brewfiles for packages.** Only use `setup.sh` for configuration that can't be expressed declaratively (symlinking, system settings, etc.).
+**Use Brewfiles for packages.** Only use `setup.sh.tmpl` for configuration that can't be expressed declaratively (system settings, manual install documentation, etc.).
 
-**Document your kits.** Add a README.md explaining what's in the kit and why someone would enable it.
-
-**Empty kits are OK.** Placeholder kits (productivity, security) exist so forks can add their own packages without modifying the orchestrator.
+**Follow the format standards.** See `.cursor/rules.md` for Brewfile and setup.sh.tmpl templates.

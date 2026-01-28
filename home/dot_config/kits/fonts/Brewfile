@@ -1,49 +1,31 @@
 # Fonts Kit
 #
-# Optional design and coding fonts for typography enthusiasts.
-# Comprehensive collection of popular typefaces for UI, web, and code.
+# Design and coding fonts for typography enthusiasts.
+# Use case: UI design, web development, code editing.
 
 # ===================================================================
 # Design Fonts - Sans Serif
 # ===================================================================
 
-# Inter - Modern variable font, dominant in UI/web (GitHub, Vercel)
-cask "font-inter"
-
-# Poppins - Geometric sans, trending in 2024-26
-cask "font-poppins"
-
-# Roboto - Google's ubiquitous default
-cask "font-roboto"
-
-# Montserrat - Free Gotham alternative, professional
-cask "font-montserrat"
-
-# DM Sans - Minimal, excellent for UI
-cask "font-dm-sans"
-
-# Space Grotesk - Modern geometric with personality
-cask "font-space-grotesk"
+cask "font-dm-sans"                    # Minimal, excellent for UI
+cask "font-inter"                      # Modern variable font (GitHub, Vercel)
+cask "font-montserrat"                 # Free Gotham alternative
+cask "font-poppins"                    # Geometric sans, trending
+cask "font-roboto"                     # Google's ubiquitous default
+cask "font-space-grotesk"              # Modern geometric with personality
 
 # ===================================================================
 # Design Fonts - Serif
 # ===================================================================
 
-# Merriweather - Readable body text
-cask "font-merriweather"
-
-# Playfair Display - Elegant headers
-cask "font-playfair-display"
+cask "font-merriweather"               # Readable body text
+cask "font-playfair-display"           # Elegant headers
 
 # ===================================================================
-# Bonus Coding Fonts
+# Coding Fonts
 # ===================================================================
 
-# Fira Code - Popular ligature support
-cask "font-fira-code"
-
-# Cascadia Code - Microsoft's coding font, excellent ligatures
-cask "font-cascadia-code"
-
-# Source Code Pro - Adobe's readable monospace
-cask "font-source-code-pro"
+cask "font-cascadia-code"              # Microsoft's coding font, ligatures
+cask "font-fira-code"                  # Popular ligature support
+cask "font-jetbrains-mono"             # JetBrains coding font
+cask "font-source-code-pro"            # Adobe's readable monospace

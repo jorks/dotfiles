@@ -1,0 +1,37 @@
+# Mac Admin Kit
+#
+# Mac/IT administration and management tools.
+# Use case: Mac admins, IT professionals, MDM management.
+
+# ===================================================================
+# Dependencies
+# ===================================================================
+
+brew "mas"                             # Mac App Store CLI
+
+# ===================================================================
+# Package Inspection
+# ===================================================================
+
+cask "apparency"                       # App code signing inspector
+cask "suspicious-package"              # PKG file inspector
+
+# ===================================================================
+# macOS Management
+# ===================================================================
+
+cask "desktoppr"                       # Desktop wallpaper management
+cask "mist"                            # macOS installer downloader
+
+# ===================================================================
+# Hardware Info
+# ===================================================================
+
+cask "mactracker"                      # Apple hardware database
+
+# ===================================================================
+# Mac App Store
+# ===================================================================
+
+mas "Apple Configurator", id: 1037126344   # Device configuration
+mas "Apple Remote Desktop", id: 409907375  # Remote management

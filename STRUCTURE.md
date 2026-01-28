@@ -16,9 +16,7 @@ dotfiles/
 ├── docs/                        # centralized documentation
 │   ├── dotfiles.md              # daily workflow, naming conventions
 │   ├── scripts.md               # script lifecycle, numbering scheme
-│   ├── kits.md                  # kit system overview, creating kits
-│   ├── kits-devtools.md         # devtools kit package reference
-│   └── kits-fonts.md            # fonts kit package reference
+│   └── kits.md                  # kit system overview, creating kits
 │
 └── home/                        # chezmoi source root (maps to $HOME)
     ├── .chezmoi.toml.tmpl       # user prompts (name, email, enabled kits)
@@ -46,9 +44,9 @@ dotfiles/
         ├── terminal/
         ├── vim/
         └── kits/                # capability Brewfiles
-            └── devtools/
+            └── <kit-name>/
                 ├── Brewfile
-                └── setup.sh     # optional post-install script
+                └── setup.sh.tmpl   # optional post-install script
 ```
 
 ## How it's organized
@@ -65,7 +63,7 @@ Everything here maps into `$HOME` when you run `chezmoi apply`. Dotfiles at the 
 
 Templates (`.tmpl` suffix) are rendered with data from `.chezmoi.toml` before being applied. This keeps personal values out of version control.
 
-The `kits/` subdirectory is where capability Brewfiles live. They're applied to `~/.config/kits/` and consumed by `.chezmoiscripts/30-kits/` during apply. Optional `setup.sh` scripts handle post-install configuration that can't be expressed in a Brewfile.
+The `kits/` subdirectory is where capability Brewfiles live. They're applied to `~/.config/kits/` and consumed by `.chezmoiscripts/30-kits/` during apply. Optional `setup.sh.tmpl` scripts handle post-install configuration that can't be expressed in a Brewfile (rendered to `setup.sh` by chezmoi).
 
 ### `home/_lib/` – source-only script libraries
 
@@ -106,9 +104,7 @@ Documentation moved out of implementation directories to keep the source tree cl
 
 - [docs/dotfiles.md](docs/dotfiles.md) – Daily workflow, naming conventions, common tasks
 - [docs/scripts.md](docs/scripts.md) – Script lifecycle, numbering scheme, directory purposes
-- [docs/kits.md](docs/kits.md) – Kit system overview, available kits, creating new kits
-- [docs/kits-devtools.md](docs/kits-devtools.md) – Devtools kit package list
-- [docs/kits-fonts.md](docs/kits-fonts.md) – Fonts kit package list
+- [docs/kits.md](docs/kits.md) – Kit system overview, creating new kits
 
 ## Templates and data
 
@@ -153,15 +149,14 @@ Each kit is a Brewfile (packages to install) and optional `setup.sh` (post-insta
 3. **Brewfiles install packages** – Each kit's Brewfile gets applied via `brew bundle`
 4. **Optional setup runs** – If a `setup.sh` exists, it runs for kit-specific configuration
 
-### Available kits
+### Example kits
 
-- **devtools** – Docker, compilers, language runtimes. For machines where you write code.
-- **productivity** – Browsers, communication apps, utilities. Personal laptops, not servers.
-- **security** – VPNs, password managers. Work machines, not your homelab.
-- **macadmin** – IT/sysadmin tooling for Mac management. Only if you're that kind of sysadmin.
-- **fonts** – Design fonts and bonus coding fonts. Typography nerds only.
+- **devtools** – Editors, containers, terminals, API tools
+- **productivity** – Browsers, communication, task management
+- **utilities** – Menu bar apps, window management
+- **php_dev / python_dev** – Language-specific tooling
 
-See [docs/kits.md](docs/kits.md) for details on individual kits and how to create new ones.
+Browse `home/dot_config/kits/` to see all available kits. See [docs/kits.md](docs/kits.md) for how to create new ones.
 
 ## Design principles
 
@@ -204,7 +199,7 @@ Check the Brewfile syntax. Run `brew bundle --file=<path>` manually to see the e
 
 **New dotfile** → Drop it in `home/` with the appropriate prefix (`dot_`, `private_`, `create_`, `.tmpl`).
 
-**New kit** → Create `home/dot_config/kits/<name>/Brewfile`, add prompt to `home/.chezmoi.toml.tmpl`. The orchestrator handles the rest. Add optional `setup.sh` for post-install config.
+**New kit** → Create `home/dot_config/kits/<name>/Brewfile`, add prompt to `home/.chezmoi.toml.tmpl`. The orchestrator handles the rest. Add optional `setup.sh.tmpl` for post-install config.
 
 **New platform setup** → Add `run_once_` script to `home/.chezmoiscripts/00-base/` with platform guard.
 

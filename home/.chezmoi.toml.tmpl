@@ -25,8 +25,8 @@
 # They are personal, machine-independent, and should be explicit.
 # -------------------------------------------------------------------
 
-{{- $git_name := promptStringOnce . "git_name" "Git name (e.g., Tom Smith)" -}}
-{{- $git_email := promptStringOnce . "git_email" "Git email (e.g., tsmith@users.noreply.github.com)" -}}
+{{- $git_name  := promptStringOnce . "git_name"  "Git author name       (e.g. James Smith)" -}}
+{{- $git_email := promptStringOnce . "git_email" "Git author email      (e.g. james@users.noreply.github.com)" -}}
 
 # -------------------------------------------------------------------
 # Device classification
@@ -34,8 +34,8 @@
 # Determines how certain system settings are managed.
 # -------------------------------------------------------------------
 
-{{- $is_personal := promptBoolOnce . "is_personal" "Is this a personal computer?" true -}}
-{{- $primary_email := promptStringOnce . "primary_email" "Primary email for this device" "" -}}
+{{- $is_personal   := promptBoolOnce   . "is_personal"   "Is this a personal computer?      " true -}}
+{{- $primary_email := promptStringOnce . "primary_email" "Primary email for this device     " "" -}}
 
 # -------------------------------------------------------------------
 # Preferences (safe defaults)
@@ -44,7 +44,7 @@
 # Users can still override them during the first apply if desired.
 # -------------------------------------------------------------------
 
-{{- $editor := promptStringOnce . "editor" "Preferred editor" "nano" -}}
+{{- $editor := promptStringOnce . "editor" "Preferred editor                   " "nano" -}}
 
 # -------------------------------------------------------------------
 # Package installation (opt-out defaults)
@@ -52,7 +52,7 @@
 # Control what gets installed. Defaults to yes for base essentials.
 # -------------------------------------------------------------------
 
-{{- $install_base_cli := promptBoolOnce . "install_base_cli" "Install base CLI packages (git, curl, fzf, etc.)" true -}}
+{{- $install_base_cli := promptBoolOnce . "install_base_cli" "Install base CLI packages?         (git, curl, fzf, etc.)" true -}}
 
 # -------------------------------------------------------------------
 # Kits (opt-in defaults)
@@ -60,11 +60,16 @@
 # Optional capability layers. Enable what you need.
 # -------------------------------------------------------------------
 
-{{- $kits_devtools := promptBoolOnce . "kits.devtools" "Enable devtools kit? (Docker, compilers, dev tools)" false -}}
-{{- $kits_macadmin := promptBoolOnce . "kits.macadmin" "Enable macadmin kit? (IT/sysadmin tools)" false -}}
-{{- $kits_productivity := promptBoolOnce . "kits.productivity" "Enable productivity kit? (Apps, utilities)" false -}}
-{{- $kits_security := promptBoolOnce . "kits.security" "Enable security kit? (VPN, security tools)" false -}}
-{{- $kit_fonts := promptBoolOnce . "kits.fonts" "Enable fonts kit? (Design fonts, bonus coding fonts)" false -}}
+{{- $kits_productivity := promptBoolOnce . "kits.productivity" "Kit: productivity?                 (browsers, communication, tasks)" false -}}
+{{- $kits_utilities   := promptBoolOnce . "kits.utilities"   "Kit: utilities?                    (menu bar apps, window management)" false -}}
+{{- $kits_security    := promptBoolOnce . "kits.security"    "Kit: security?                     (1Password, secret scanning)" false -}}
+{{- $kits_devtools    := promptBoolOnce . "kits.devtools"    "Kit: devtools?                     (editors, containers, terminals)" false -}}
+{{- $kits_fonts       := promptBoolOnce . "kits.fonts"       "Kit: fonts?                        (design and coding fonts)" false -}}
+{{- $kits_php_dev     := promptBoolOnce . "kits.php_dev"     "Kit: php_dev?                      (PHP, Composer, PhpStorm)" false -}}
+{{- $kits_python_dev  := promptBoolOnce . "kits.python_dev"  "Kit: python_dev?                   (Python, pipx, PyCharm)" false -}}
+{{- $kits_macadmin    := promptBoolOnce . "kits.macadmin"    "Kit: macadmin?                     (IT/sysadmin tools)" false -}}
+{{- $kits_network     := promptBoolOnce . "kits.network"     "Kit: network?                      (network analysis, remote access)" false -}}
+
 # -------------------------------------------------------------------
 # Data output
 # -------------------------------------------------------------------
@@ -78,8 +83,12 @@
   install_base_cli = {{ $install_base_cli }}
 
 [data.kits]
-  devtools = {{ $kits_devtools }}
-  macadmin = {{ $kits_macadmin }}
   productivity = {{ $kits_productivity }}
+  utilities = {{ $kits_utilities }}
   security = {{ $kits_security }}
-  fonts = {{ $kit_fonts }}
+  devtools = {{ $kits_devtools }}
+  fonts = {{ $kits_fonts }}
+  php_dev = {{ $kits_php_dev }}
+  python_dev = {{ $kits_python_dev }}
+  macadmin = {{ $kits_macadmin }}
+  network = {{ $kits_network }}

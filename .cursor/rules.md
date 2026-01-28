@@ -94,6 +94,171 @@ Scripts may source libraries using:
 
 ---
 
+## Kit Brewfile Standards
+
+All kit Brewfiles MUST follow this structure.
+
+### Header
+
+Every Brewfile MUST begin with a descriptive header:
+
+```ruby
+# <Kit Name> Kit
+#
+# <One-line description of the kit's purpose>
+# <Optional: Use case or who should enable this kit>
+```
+
+### Section Organization
+
+Packages MUST be grouped by category with section comments:
+
+```ruby
+# ===================================================================
+# <Category Name>
+# ===================================================================
+```
+
+### Package Format
+
+All package declarations MUST use aligned inline comments (column 40):
+
+```ruby
+brew "package-name"                    # Brief description
+cask "app-name"                        # Brief description
+mas "App Name", id: 123456789          # Brief description
+```
+
+### Ordering
+
+Within each section, packages MUST be listed in **alphabetical order** by package name.
+
+### Mac App Store Apps
+
+When a kit includes Mac App Store apps:
+
+1. Include `brew "mas"` at the top of the Brewfile (in a Dependencies section)
+2. Use the `mas` directive with app name and ID
+3. App IDs can be found via `mas search <name>` or App Store URLs
+
+### Complete Example
+
+```ruby
+# Productivity Kit
+#
+# Browsers, communication, task management, and writing tools.
+# Use case: Personal and work laptops.
+
+# ===================================================================
+# Dependencies
+# ===================================================================
+
+brew "mas"                             # Mac App Store CLI
+
+# ===================================================================
+# Browsers
+# ===================================================================
+
+cask "firefox"                         # Mozilla browser
+cask "google-chrome"                   # Google browser
+cask "microsoft-edge"                  # Microsoft browser
+
+# ===================================================================
+# Communication
+# ===================================================================
+
+cask "slack"                           # Team messaging
+cask "zoom"                            # Video conferencing
+
+# ===================================================================
+# Mac App Store
+# ===================================================================
+
+mas "Amphetamine", id: 937984704       # Prevent sleep
+mas "Things 3", id: 904280696          # Task manager
+```
+
+---
+
+## Kit setup.sh.tmpl Standards
+
+Optional `setup.sh.tmpl` scripts MUST follow the standard script header format,
+source shared libraries, and include documentation for apps not available via Homebrew.
+
+### File Naming
+
+Kit setup scripts MUST use the `.tmpl` extension to enable chezmoi templating:
+
+```
+home/dot_config/kits/<kit-name>/setup.sh.tmpl
+```
+
+### Purpose
+
+Use `setup.sh.tmpl` ONLY for:
+
+- Post-install configuration that cannot be declarative
+- Documenting apps that must be installed manually
+
+### Shared Libraries
+
+Kit scripts MUST source shared libraries from `_lib/` for logging and utilities:
+
+```bash
+# shellcheck source=../../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+```
+
+This ensures consistent logging output across all scripts.
+
+### Header Format
+
+```bash
+#!/usr/bin/env bash
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+# Post-install configuration for <kit-name> kit
+#
+# SCOPE:
+# - Runs on: macOS
+# - Lifecycle: runs after Brewfile is applied
+#
+# BEHAVIOUR:
+# - Idempotent (safe to re-run)
+# - Documents manual installation requirements
+#
+# NOTES:
+# - Apps not in Homebrew are documented below for manual install
+# -------------------------------------------------------------------
+
+# shellcheck source=../../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+```
+
+### Documenting Non-Brew Apps
+
+Apps not available via Homebrew MUST be documented as commented blocks:
+
+```bash
+# -------------------------------------------------------------------
+# MANUAL INSTALLS (not available via Homebrew)
+# -------------------------------------------------------------------
+#
+# Jamf Admin
+#   Download: https://www.jamf.com/resources/product-documentation/
+#   Notes: Requires Jamf Pro subscription
+#
+# iMazing Profile Editor
+#   Download: https://imazing.com/profile-editor
+#   Notes: Free, no account required
+#
+# -------------------------------------------------------------------
+```
+
+---
+
 ## Templating & Configuration
 
 - Use chezmoi templates (`{{ }}`), not shell substitution

@@ -1,22 +1,100 @@
 # Devtools Kit
 #
-# Development tools, compilers, runtimes, and containers.
-# This is the minimal set for software engineering work.
+# Core development environment: editors, containers, terminals, API tools.
+# Use case: Machines where you write code.
 
+# ===================================================================
+# Dependencies
+# ===================================================================
+
+brew "mas"                             # Mac App Store CLI
+
+# ===================================================================
+# CLI Tools
+# ===================================================================
+
+brew "bat"                             # Cat clone with syntax highlighting
+brew "gh"                              # GitHub CLI
+brew "git-lfs"                         # Git Large File Storage
+brew "jq"                              # JSON processor
+brew "shellcheck"                      # Shell script linter
+brew "tree"                            # Directory listing
+
+# ===================================================================
 # Containers
-brew "docker"
-brew "docker-compose"
+# ===================================================================
 
-# Languages & Runtimes
-brew "node"
-brew "python@3.12"
-brew "go"
+brew "docker"                          # Container runtime
+brew "docker-compose"                  # Multi-container orchestration
 
-# Build tools
-brew "cmake"
-brew "pkg-config"
+# ===================================================================
+# Build Tools
+# ===================================================================
 
-# Development utilities
-brew "gh"          # GitHub CLI
-brew "jq"          # Already in base, but showing pattern
-brew "httpie"      # HTTP client
+brew "cmake"                           # Cross-platform build system
+brew "pkg-config"                      # Compile/link helper
+
+# ===================================================================
+# Terminals
+# ===================================================================
+
+cask "iterm2"                          # Terminal emulator
+cask "warp"                            # AI-powered terminal
+
+# ===================================================================
+# Editors
+# ===================================================================
+
+cask "cursor"                          # AI-first code editor
+cask "sublime-merge"                   # Git client
+cask "sublime-text"                    # Text editor
+cask "visual-studio-code"              # Microsoft code editor
+# cask "zed"                           # High-performance editor
+
+# ===================================================================
+# JetBrains
+# ===================================================================
+
+cask "jetbrains-toolbox"               # JetBrains IDE manager
+
+# ===================================================================
+# Git Clients
+# ===================================================================
+
+cask "github"                          # GitHub Desktop
+
+# ===================================================================
+# API & HTTP Tools
+# ===================================================================
+
+cask "httpie"                          # HTTP client (GUI)
+cask "postman"                         # API development platform
+cask "proxyman"                        # HTTP debugging proxy
+
+# ===================================================================
+# Database Tools
+# ===================================================================
+
+cask "dbngin"                          # Database version manager
+cask "tableplus"                       # Database GUI client
+
+# ===================================================================
+# Utilities
+# ===================================================================
+
+cask "balenaetcher"                    # USB/SD image flasher
+cask "devutils"                        # Developer utilities
+cask "utm"                             # Virtual machine host
+
+# ===================================================================
+# Design
+# ===================================================================
+
+cask "pastel"                          # Color palette manager
+
+# ===================================================================
+# Mac App Store
+# ===================================================================
+
+mas "CodeRunner", id: 955297617        # Multi-language code editor
+mas "Icon Set Creator", id: 452747075  # App icon generator
