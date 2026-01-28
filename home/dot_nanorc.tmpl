@@ -58,12 +58,18 @@ set multibuffer
 # -------------------------------------------------------------------
 # Syntax highlighting
 # -------------------------------------------------------------------
+{{- if eq .chezmoi.os "darwin" }}
+{{-   if eq .chezmoi.arch "arm64" }}
 
 # Homebrew nano (Apple Silicon)
 include "/opt/homebrew/share/nano/*.nanorc"
+{{-   else }}
 
 # Homebrew nano (Intel Mac)
 include "/usr/local/share/nano/*.nanorc"
+{{-   end }}
+{{- else }}
 
-# Linux (Debian/Ubuntu/etc)
+# Linux
 include "/usr/share/nano/*.nanorc"
+{{- end }}
