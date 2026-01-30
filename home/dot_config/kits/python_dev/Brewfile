@@ -1,0 +1,35 @@
+# Python Dev Kit
+#
+# Python-specific development environment.
+# Use case: Python application development, scripting, automation.
+
+# ===================================================================
+# Python Runtimes
+# ===================================================================
+
+brew "python@3.12"                     # Primary Python version
+
+# ===================================================================
+# Package Management
+# ===================================================================
+
+brew "pipx"                            # Install Python CLI tools in isolation
+
+# ===================================================================
+# Version Management
+# ===================================================================
+
+# brew "pyenv"                         # Python version manager (optional)
+
+# ===================================================================
+# Code Quality
+# ===================================================================
+
+brew "pre-commit"                      # Git hook framework
+brew "ruff"                            # Fast Python linter
+
+# ===================================================================
+# IDE
+# ===================================================================
+
+cask "pycharm"                         # JetBrains Python IDE

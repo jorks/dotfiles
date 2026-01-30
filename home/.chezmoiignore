@@ -1,45 +1,27 @@
-# -------------------------------------------------------------------
-# .chezmoiignore
-# -------------------------------------------------------------------
-#
-# PURPOSE
-# -------
-# Controls which files in this repository are ignored by chezmoi
-# and never applied to the target system.
-#
-# This file intentionally does NOT use the `dot_` prefix convention.
-# Chezmoi treats `.chezmoiignore` as a special control file that must
-# exist at the repository root with this exact name.
-#
-# Use this file to exclude:
-# - documentation files
-# - example / reference artefacts
-# - local or private variants
-# - editor or OS-generated noise
-#
-# -------------------------------------------------------------------
-# Documentation
-# -------------------------------------------------------------------
+# =====================================================================
+# OS-SPECIFIC SCRIPT EXECUTION
+# =====================================================================
+# Scripts in .chezmoiscripts/ are controlled by in-script OS checks,
+# NOT by .chezmoiignore patterns. Each script checks the OS at runtime
+# and exits early if not appropriate. See individual script headers
+# for details on their platform requirements.
+# =====================================================================
 
-README.md
-CHEZMOI.md
-
-# -------------------------------------------------------------------
-# Example / reference files
-# -------------------------------------------------------------------
-
+# Exclude example / reference files
 *.example
 *.example.*
 
-# -------------------------------------------------------------------
-# Local-only or private variants
-# -------------------------------------------------------------------
-
+# Exclude local-only or private variants
 *.local
 *.private
 
-# -------------------------------------------------------------------
-# Editor / OS noise
-# -------------------------------------------------------------------
+# Exceptions: Allow these .local files to be created once (use create_ prefix)
+# The create_ prefix ensures they won't be overwritten after initial creation
+!.ssh/hosts.local
+!.gitconfig.local
 
+# Exclude editor / OS noise
 .DS_Store
+
+# Exclude source-only library infrastructure
+_lib

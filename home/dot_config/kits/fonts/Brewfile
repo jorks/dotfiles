@@ -1,0 +1,31 @@
+# Fonts Kit
+#
+# Design and coding fonts for typography enthusiasts.
+# Use case: UI design, web development, code editing.
+
+# ===================================================================
+# Design Fonts - Sans Serif
+# ===================================================================
+
+cask "font-dm-sans"                    # Minimal, excellent for UI
+cask "font-inter"                      # Modern variable font (GitHub, Vercel)
+cask "font-montserrat"                 # Free Gotham alternative
+cask "font-poppins"                    # Geometric sans, trending
+cask "font-roboto"                     # Google's ubiquitous default
+cask "font-space-grotesk"              # Modern geometric with personality
+
+# ===================================================================
+# Design Fonts - Serif
+# ===================================================================
+
+cask "font-merriweather"               # Readable body text
+cask "font-playfair-display"           # Elegant headers
+
+# ===================================================================
+# Coding Fonts
+# ===================================================================
+
+cask "font-cascadia-code"              # Microsoft's coding font, ligatures
+cask "font-fira-code"                  # Popular ligature support
+cask "font-jetbrains-mono"             # JetBrains coding font
+cask "font-source-code-pro"            # Adobe's readable monospace

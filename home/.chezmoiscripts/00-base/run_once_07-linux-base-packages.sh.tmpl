@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install base system packages required for Linux setup
+#
+# SCOPE:
+#   - Runs on: Linux only (excluded on macOS via .chezmoiignore)
+#   - Lifecycle: run_once
+#
+# BEHAVIOUR:
+#   - Idempotent (apt handles already-installed packages)
+#   - Requires sudo
+#   - Non-interactive
+#
+# NOTES:
+#   - These are infrastructure packages, not user CLI tools
+#   - Required for package manager security and basic operations
+#   - Must run before any other package installations
+# -------------------------------------------------------------------
+
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+SCRIPT_NAME="00-base/07-linux-base-packages.sh"
+
+{{- if ne .chezmoi.os "linux" }}
+log_script_skip "$SCRIPT_NAME" "not Linux"
+exit 0
+{{- end }}
+
+log_script_start "$SCRIPT_NAME"
+
+log_info "Installing base system packages (requires admin privileges)..."
+log_warn "You may be prompted for your password"
+
+# Infrastructure packages required for secure package management and setup
+PACKAGES="
+  ca-certificates
+  curl
+  wget
+  gnupg
+  lsb-release
+  git
+"
+
+# Install packages (apt handles already-installed gracefully)
+if sudo DEBIAN_FRONTEND=noninteractive apt-get install -y $PACKAGES; then
+  log_success "Base system packages installed"
+  log_script_end "$SCRIPT_NAME"
+else
+  log_error "Failed to install base packages"
+  log_script_end "$SCRIPT_NAME"
+  exit 1
+fi

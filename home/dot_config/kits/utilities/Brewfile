@@ -1,0 +1,37 @@
+# Utilities Kit
+#
+# System utilities, menu bar apps, and Quick Look extensions.
+# Use case: Enhancing macOS daily workflow.
+
+# ===================================================================
+# Menu Bar
+# ===================================================================
+
+cask "hiddenbar"                       # Hide menu bar icons
+cask "istat-menus"                     # System monitor
+cask "monitorcontrol"                  # External display brightness
+
+# ===================================================================
+# Window Management
+# ===================================================================
+
+cask "raycast"                         # Launcher and productivity
+# cask "rectangle"                       # Window snapping
+
+# ===================================================================
+# Cleanup & Compression
+# ===================================================================
+
+cask "appcleaner"                      # App uninstaller
+cask "keka"                            # File archiver
+cask "omnidisksweeper"                 # Disk space analyzer
+
+# ===================================================================
+# Quick Look Extensions
+# ===================================================================
+
+cask "qlcolorcode"                     # Syntax highlighting
+cask "qlimagesize"                     # Image dimensions
+cask "qlmarkdown"                      # Markdown preview
+cask "qlstephen"                       # Plain text files
+cask "quicklook-json"                  # JSON preview

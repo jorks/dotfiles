@@ -1,0 +1,36 @@
+# ~/.gitconfig.local
+#
+# PURPOSE
+# -------
+# Machine-specific git configuration.
+#
+# This file is created once by chezmoi, then manually editable.
+# Use this for identity settings, signing keys, and local overrides.
+
+[user]
+  name = {{ .git_name }}
+  email = {{ .git_email }}
+{{- if eq .chezmoi.os "darwin" }}
+  # signingkey = <set by chezmoi script>
+{{- end }}
+
+[core]
+  editor = {{ .editor }}
+
+{{- if eq .chezmoi.os "darwin" }}
+# -------------------------------------------------------------------
+# SSH commit signing via 1Password
+# -------------------------------------------------------------------
+# Requires: 1Password app with SSH agent enabled
+# The signingkey above is configured by the chezmoi git-signing script
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+  allowedSignersFile = ~/.ssh/allowed_signers
+
+[commit]
+  gpgsign = true
+{{- end }}
