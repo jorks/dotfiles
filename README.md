@@ -15,7 +15,7 @@ It's opinionated about *how* things are organized, but generic about *what* gets
 On a fresh macOS or Linux machine:
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply <your-github-username>
+sh -c "$(curl -fsLS get.chezmoi.io/lb)" -- init --apply <your-github-username>
 ```
 
 This assumes your dotfiles repo is named `dotfiles`.
