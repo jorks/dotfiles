@@ -36,7 +36,6 @@
 # -------------------------------------------------------------------
 
 {{- $is_personal   := promptBoolOnce   . "is_personal"   "Is this a personal computer?      " true -}}
-{{- $primary_email := promptStringOnce . "primary_email" "Primary email for this device     " "" -}}
 
 # -------------------------------------------------------------------
 # Preferences (safe defaults)
@@ -80,7 +79,6 @@
   git_email = {{ $git_email | quote }}
   github_username = {{ $github_username | quote }}
   is_personal = {{ $is_personal }}
-  primary_email = {{ $primary_email | quote }}
   editor = {{ $editor | quote }}
   install_base_cli = {{ $install_base_cli }}
 
