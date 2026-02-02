@@ -154,7 +154,7 @@ Each kit is a Brewfile (packages to install) and optional `setup.sh` (post-insta
 - **devtools** – Editors, containers, terminals, API tools
 - **productivity** – Browsers, communication, task management
 - **utilities** – Menu bar apps, window management
-- **php_dev / python_dev** – Language-specific tooling
+- **php-dev / python-dev** – Language-specific tooling
 
 Browse `home/dot_config/kits/` to see all available kits. See [docs/kits.md](docs/kits.md) for how to create new ones.
 

@@ -32,7 +32,7 @@ This happens automatically during `chezmoi apply`. Change a kit's Brewfile, reru
 - **devtools** – Editors, terminals, containers, API tools. For machines where you write code.
 - **productivity** – Browsers, communication apps, task managers. Personal and work laptops.
 - **utilities** – Menu bar apps, window management, Quick Look extensions.
-- **php_dev / python_dev** – Language-specific tooling and IDEs.
+- **php-dev / python-dev** – Language-specific tooling and IDEs.
 
 Browse `home/dot_config/kits/` to see all available kits and their Brewfiles.
 

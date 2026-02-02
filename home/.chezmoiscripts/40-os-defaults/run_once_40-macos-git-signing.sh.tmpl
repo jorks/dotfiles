@@ -32,7 +32,7 @@ log_script_skip "$SCRIPT_NAME" "not macOS"
 exit 0
 {{- end }}
 
-{{- if eq .github_username "" }}
+{{- if or (not (hasKey . "github_username")) (eq .github_username "") }}
 log_script_skip "$SCRIPT_NAME" "no GitHub username configured"
 exit 0
 {{- end }}
@@ -99,7 +99,9 @@ fi
 
 # Create allowed_signers file
 mkdir -p "$(dirname "$ALLOWED_SIGNERS")"
+chmod 700 "$(dirname "$ALLOWED_SIGNERS")"
 echo "$GIT_EMAIL $SELECTED_KEY" > "$ALLOWED_SIGNERS"
+chmod 644 "$ALLOWED_SIGNERS"
 log_success "Created $ALLOWED_SIGNERS"
 
 log_script_end "$SCRIPT_NAME"
