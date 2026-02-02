@@ -1,0 +1,83 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install base CLI packages on macOS via Homebrew
+#
+# SCOPE:
+#   - Runs on: macOS only (excluded on Linux via .chezmoiignore)
+#   - Lifecycle: run_onchange (re-runs when package list changes)
+#
+# BEHAVIOUR:
+#   - Idempotent (brew handles already-installed packages)
+#   - Controlled by .install_base_cli config flag
+#
+# NOTES:
+#   - Package list intentionally minimal (CLI tools only)
+#   - GUI apps belong in kits or separate scripts
+#   - KEEP IN SYNC with run_onchange_11-base-cli-packages-linux.sh.tmpl
+# -------------------------------------------------------------------
+
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+# shellcheck source=../../_lib/brew.sh
+. "{{ .chezmoi.sourceDir }}/_lib/brew.sh"
+
+SCRIPT_NAME="10-packages/10-base-cli-packages-macos.sh"
+
+{{- if ne .chezmoi.os "darwin" }}
+log_script_skip "$SCRIPT_NAME" "not macOS"
+exit 0
+{{- end }}
+
+{{- if not .install_base_cli }}
+log_script_skip "$SCRIPT_NAME" "install_base_cli=false"
+exit 0
+{{- end }}
+
+log_script_start "$SCRIPT_NAME"
+
+# ┌─────────────────────────────────────────────────────────────────┐
+# │ BASE CLI PACKAGES                                               │
+# │                                                                 │
+# │ ⚠️  WARNING: Keep this list in sync with the Linux variant!    │
+# │    File: 10-packages/run_onchange_11-base-cli-packages-linux.sh.tmpl │
+# │                                                                 │
+# │ Package names may differ slightly (e.g., fd vs fd-find).       │
+# │ This drift is acceptable - just keep intent aligned.           │
+# └─────────────────────────────────────────────────────────────────┘
+
+PACKAGES="
+  chezmoi
+  curl
+  wget
+  mas
+  git
+  fzf
+  ripgrep
+  fd
+  jq
+  neovim
+  nano
+  shellcheck
+  tree
+  htop
+  watch
+  git-delta
+"
+
+log_info "Installing base CLI packages via Homebrew..."
+
+# Install packages (brew handles already-installed gracefully)
+for pkg in $PACKAGES; do
+  log_info "Installing: $pkg"
+  if brew install "$pkg"; then
+    log_success "$pkg installed"
+  else
+    log_warn "Failed to install $pkg (continuing)"
+  fi
+done
+
+log_success "Base CLI packages installed"
+log_script_end "$SCRIPT_NAME"

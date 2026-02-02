@@ -1,0 +1,57 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install essential coding fonts via Homebrew
+#
+# SCOPE:
+#   - Runs on: macOS only (excluded on Linux via .chezmoiignore)
+#   - Lifecycle: run_onchange (re-runs when font list changes)
+#
+# BEHAVIOUR:
+#   - Idempotent (brew handles already-installed fonts)
+#   - Installs JetBrains Mono (IDE, ligatures)
+#   - Installs Inconsolata (Terminal)
+#
+# NOTES:
+#   - These are must-have coding fonts, not optional
+#   - Installed system-wide to /Library/Fonts
+#   - Available immediately in all applications
+#   - Change the font list here and chezmoi will re-run
+# -------------------------------------------------------------------
+
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+# shellcheck source=../../_lib/brew.sh
+. "{{ .chezmoi.sourceDir }}/_lib/brew.sh"
+
+SCRIPT_NAME="10-packages/12-fonts-essentials.sh"
+
+{{- if ne .chezmoi.os "darwin" }}
+log_script_skip "$SCRIPT_NAME" "not macOS"
+exit 0
+{{- end }}
+
+log_script_start "$SCRIPT_NAME"
+
+log_info "Installing essential coding fonts..."
+
+# Essential coding fonts
+FONTS="
+  font-jetbrains-mono
+  font-inconsolata
+"
+
+# Install fonts
+for font in $FONTS; do
+  log_info "Installing: $font"
+  if brew install --cask "$font"; then
+    log_success "$font installed"
+  else
+    log_warn "Failed to install $font (continuing)"
+  fi
+done
+
+log_success "Essential coding fonts installed"
+log_script_end "$SCRIPT_NAME"

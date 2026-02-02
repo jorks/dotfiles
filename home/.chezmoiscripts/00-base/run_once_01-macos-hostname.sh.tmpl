@@ -1,0 +1,86 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Configure computer hostname on macOS
+#
+# SCOPE:
+#   - Runs on: macOS only (excluded on Linux via .chezmoiignore)
+#   - Lifecycle: run_once
+#
+# BEHAVIOUR:
+#   - Personal computers: Offers to change hostname interactively
+#   - Work computers: Displays current hostname (read-only)
+#   - Requires sudo for changes
+#
+# NOTES:
+{{- if .is_personal }}
+#   - Personal computer detected - hostname management enabled
+{{- else }}
+#   - Work computer detected - hostname is managed, no changes allowed
+{{- end }}
+# -------------------------------------------------------------------
+
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+SCRIPT_NAME="00-base/01-macos-hostname.sh"
+
+{{- if ne .chezmoi.os "darwin" }}
+log_script_skip "$SCRIPT_NAME" "not macOS"
+exit 0
+{{- end }}
+
+log_script_start "$SCRIPT_NAME"
+
+CURRENT_HOSTNAME="$(hostname)"
+
+{{- if .is_personal }}
+
+# Personal computer - allow hostname changes
+log_info "Current hostname: $CURRENT_HOSTNAME"
+
+# Ask if user wants to change it
+printf "\n"
+read -r -p "Change hostname? (y/N): " CONFIRM
+
+if ! echo "$CONFIRM" | grep -iq "^y"; then
+  log_info "Keeping current hostname"
+  log_script_end "$SCRIPT_NAME"
+  exit 0
+fi
+
+# Prompt for new hostname
+printf "Enter new hostname: "
+read -r NEW_HOSTNAME
+
+if [ -z "$NEW_HOSTNAME" ]; then
+  log_warn "No hostname provided - keeping current"
+  log_script_end "$SCRIPT_NAME"
+  exit 0
+fi
+
+log_info "Setting hostname to: $NEW_HOSTNAME (requires admin privileges)..."
+log_warn "You may be prompted for your password"
+
+# Set all hostname variants on macOS
+sudo scutil --set ComputerName "$NEW_HOSTNAME"
+sudo scutil --set LocalHostName "$NEW_HOSTNAME"
+sudo scutil --set HostName "$NEW_HOSTNAME"
+
+# Flush DNS cache
+sudo dscacheutil -flushcache
+
+log_success "Hostname set to: $NEW_HOSTNAME"
+log_warn "Changes take effect immediately for new shells"
+log_script_end "$SCRIPT_NAME"
+
+{{- else }}
+
+# Work computer - read-only
+log_info "Hostname: $CURRENT_HOSTNAME"
+log_warn "This is a work computer - hostname is managed by IT and cannot be changed"
+log_script_end "$SCRIPT_NAME"
+
+{{- end }}

@@ -1,0 +1,107 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Configure SSH commit signing with keys from GitHub
+#
+# SCOPE:
+#   - Runs on: macOS only
+#   - Lifecycle: run_once
+#
+# BEHAVIOUR:
+#   - Idempotent (skips if signingkey already set)
+#   - Fetches SSH keys from github.com/<user>.keys
+#   - Prompts for key selection if multiple keys found
+#   - Updates ~/.gitconfig.local with signingkey
+#   - Creates ~/.ssh/allowed_signers for verification
+#
+# NOTES:
+#   - Requires network access to fetch keys
+#   - Requires 1Password SSH agent for signing to work
+#   - Skips gracefully if network unavailable
+# -------------------------------------------------------------------
+
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+SCRIPT_NAME="40-os-defaults/40-macos-git-signing.sh"
+
+{{- if ne .chezmoi.os "darwin" }}
+log_script_skip "$SCRIPT_NAME" "not macOS"
+exit 0
+{{- end }}
+
+{{- if or (not (hasKey . "github_username")) (eq .github_username "") }}
+log_script_skip "$SCRIPT_NAME" "no GitHub username configured"
+exit 0
+{{- end }}
+
+log_script_start "$SCRIPT_NAME"
+
+GITHUB_USER="{{ .github_username }}"
+GIT_EMAIL="{{ .git_email }}"
+GITCONFIG_LOCAL="$HOME/.gitconfig.local"
+ALLOWED_SIGNERS="$HOME/.ssh/allowed_signers"
+
+# Check if already configured
+if grep -q "signingkey = ssh-" "$GITCONFIG_LOCAL" 2>/dev/null; then
+  log_info "Git signing already configured"
+  log_script_end "$SCRIPT_NAME"
+  exit 0
+fi
+
+# Fetch keys from GitHub
+log_info "Fetching SSH keys from github.com/$GITHUB_USER.keys"
+KEYS=$(curl -sfL "https://github.com/$GITHUB_USER.keys" 2>/dev/null || echo "")
+
+if [ -z "$KEYS" ]; then
+  log_warn "Could not fetch SSH keys from GitHub (skipping)"
+  log_script_end "$SCRIPT_NAME"
+  exit 0
+fi
+
+# Count keys and select
+KEY_COUNT=$(echo "$KEYS" | wc -l | tr -d ' ')
+log_info "Found $KEY_COUNT SSH key(s)"
+
+if [ "$KEY_COUNT" -eq 1 ]; then
+  SELECTED_KEY="$KEYS"
+else
+  # Show keys and prompt for selection
+  echo ""
+  echo "Available SSH keys:"
+  echo "$KEYS" | nl -ba
+  echo ""
+  printf "Select key number [1]: "
+  read -r KEY_NUM
+  KEY_NUM="${KEY_NUM:-1}"
+  SELECTED_KEY=$(echo "$KEYS" | sed -n "${KEY_NUM}p")
+fi
+
+if [ -z "$SELECTED_KEY" ]; then
+  log_error "Invalid key selection"
+  log_script_end "$SCRIPT_NAME"
+  exit 1
+fi
+
+# Show truncated key for confirmation
+KEY_PREFIX=$(echo "$SELECTED_KEY" | cut -c1-30)
+log_info "Using key: ${KEY_PREFIX}..."
+
+# Update .gitconfig.local with signingkey
+if [ -f "$GITCONFIG_LOCAL" ]; then
+  sed -i '' "s|# signingkey = <set by chezmoi script>|signingkey = $SELECTED_KEY|" "$GITCONFIG_LOCAL"
+  log_success "Updated signingkey in $GITCONFIG_LOCAL"
+else
+  log_warn "$GITCONFIG_LOCAL not found (skipping signingkey update)"
+fi
+
+# Create allowed_signers file
+mkdir -p "$(dirname "$ALLOWED_SIGNERS")"
+chmod 700 "$(dirname "$ALLOWED_SIGNERS")"
+echo "$GIT_EMAIL $SELECTED_KEY" > "$ALLOWED_SIGNERS"
+chmod 644 "$ALLOWED_SIGNERS"
+log_success "Created $ALLOWED_SIGNERS"
+
+log_script_end "$SCRIPT_NAME"

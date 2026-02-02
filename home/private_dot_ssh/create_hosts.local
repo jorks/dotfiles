@@ -1,0 +1,58 @@
+# ~/.ssh/hosts.local
+#
+# PURPOSE
+# -------
+# Local SSH host definitions.
+#
+# This file is intentionally not committed.
+#
+# Use this file for personal, environment-specific, or sensitive SSH hosts.
+# It is included from ~/.ssh/config.
+#
+# CHEZMOI WORKFLOW
+# ----------------
+# This file uses chezmoi's native `create_` prefix, which means:
+# - It will be created on first apply if it doesn't exist
+# - Once created, it will never be overwritten by chezmoi
+# - You can edit ~/.ssh/hosts.local directly and your changes are safe
+#
+# The `create_` prefix is the native chezmoi way to handle "apply once" files.
+# No manual ignore list management needed!
+#
+# Start by uncommenting and customising entries as needed.
+
+# -------------------------------------------------------------------
+# Network
+# -------------------------------------------------------------------
+# Host firewall
+#   HostName firewall.example.net
+#   User user
+#
+# Host switch
+#   HostName switch.example.net
+#   User user
+#
+# Host wifi01
+#   HostName wifi01.example.net
+#   User user
+
+# -------------------------------------------------------------------
+# Hypervisors
+# -------------------------------------------------------------------
+# Host pve01
+#   HostName proxmox01.example.net
+#   User root
+
+# -------------------------------------------------------------------
+# Docker Hosts
+# -------------------------------------------------------------------
+# Host docker01
+#   HostName docker01.example.net
+#   User user
+
+# -------------------------------------------------------------------
+# Applications
+# -------------------------------------------------------------------
+# Host home
+#   HostName home.example.net
+#   User user

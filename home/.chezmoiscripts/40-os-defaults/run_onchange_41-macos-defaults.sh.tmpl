@@ -1,0 +1,257 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Configure macOS system defaults for a power-user workflow
+#
+# SCOPE:
+#   - Runs on: macOS only (excluded on Linux via .chezmoiignore)
+#   - Lifecycle: run_onchange (re-runs when script changes)
+#
+# BEHAVIOUR:
+#   - Idempotent (safe to re-run)
+#   - Applies system defaults via `defaults write`
+#   - Restarts Finder, Dock, and SystemUIServer to apply changes
+#
+# NOTES:
+#   - Manual steps for settings without a native API are listed at the end
+#   - Some changes may require logout to fully take effect
+# -------------------------------------------------------------------
+
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+SCRIPT_NAME="40-os-defaults/42-macos-defaults.sh"
+
+{{- if ne .chezmoi.os "darwin" }}
+log_script_skip "$SCRIPT_NAME" "not macOS"
+exit 0
+{{- end }}
+
+log_script_start "$SCRIPT_NAME"
+
+# -------------------------------------------------------------------
+# Configure mouse and trackpad (pointing devices)
+#
+# PURPOSE:
+#   - Enable right-click for USB and Bluetooth mice
+#   - Standardise mouse and trackpad tracking speed
+#
+# BEHAVIOUR:
+#   - Applies immediately (no logout required)
+#   - Takes effect after script's final UI restart
+#   - Idempotent
+# -------------------------------------------------------------------
+setup_mouse_and_trackpad() {
+  # Enable secondary click (right-click) for mouse
+  defaults write com.apple.driver.AppleHIDMouse Button2 -int 2
+  defaults write com.apple.AppleMultitouchMouse MouseButtonMode -string TwoButton
+
+  # Tracking speed
+  defaults write -g com.apple.mouse.scaling -float 1.5
+  defaults write -g com.apple.trackpad.scaling -float 1.5
+}
+
+# -------------------------------------------------------------------
+# Configure system keyboard shortcuts
+#
+# PURPOSE:
+#   Disable or remap system keyboard shortcuts to avoid conflicts
+#   with third-party tools (e.g. Raycast, Alfred).
+#
+# BEHAVIOUR:
+#   - Applies immediately
+#   - Takes effect after script's final UI restart
+#   - Idempotent
+# -------------------------------------------------------------------
+setup_keyboard_shortcuts() {
+  # ID 64: Finder search window (⌥⌘Space) - disabled to free for Raycast
+  defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 '{ enabled = 0; }'
+
+  # ID 60: Spotlight search (⌘Space) - uncomment to disable
+  # defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 60 '{ enabled = 0; }'
+}
+
+# -------------------------------------------------------------------
+# Configure Finder for a power-user workflow
+#
+# PURPOSE:
+#   Removes "dumbed down" defaults and makes Finder clearer
+#   and more information-dense.
+#
+# BEHAVIOUR:
+#   - Applies immediately where possible
+#   - Takes effect after script's final UI restart
+#   - Safe to re-run (idempotent)
+# -------------------------------------------------------------------
+setup_finder() {
+
+  # New Finder windows open to the home folder
+  defaults write com.apple.finder NewWindowTarget -string "PfHm"
+  defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/"
+
+  # Keep folders on top when sorting by name
+  defaults write com.apple.finder _FXSortFoldersFirst -bool true
+
+  # When searching, default to the current folder (not "This Mac")
+  defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+  # Show the full path bar at the bottom of Finder windows
+  defaults write com.apple.finder ShowPathbar -bool true
+
+  # Show the status bar (item count, available disk space)
+  defaults write com.apple.finder ShowStatusBar -bool true
+
+  # Use list view by default for new Finder windows
+  defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+
+  # Always show all filename extensions
+  defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+  # Disable warning when changing a file extension
+  defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+  # Avoid creating .DS_Store files on network and USB volumes
+  defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+  defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+}
+
+# -------------------------------------------------------------------
+# Configure macOS performance & responsiveness
+#
+# PURPOSE:
+#   Reduce animations, delays, and visual latency to make macOS feel
+#   faster and more direct without changing core behaviour.
+#
+# BEHAVIOUR:
+#   - Applies immediately where possible
+#   - Safe to re-run (idempotent)
+#   - Takes effect after script's final UI restart
+# -------------------------------------------------------------------
+setup_macos_performance() {
+
+  # Disable animated focus ring
+  defaults write NSGlobalDomain NSUseAnimatedFocusRing -bool false
+
+  # Speed up window resize animations
+  defaults write NSGlobalDomain NSWindowResizeTime -float 0.001
+
+  # Remove toolbar title hover delay
+  defaults write NSGlobalDomain NSToolbarTitleViewRolloverDelay -float 0
+
+  # Disable Finder window animations
+  defaults write com.apple.finder DisableAllAnimations -bool true
+
+  # Speed up Mission Control animations
+  defaults write com.apple.dock expose-animation-duration -float 0.1
+
+  # Disable Dock application launch animations
+  defaults write com.apple.dock launchanim -bool false
+
+  # Remove Dock auto-hide delay
+  defaults write com.apple.dock autohide-delay -float 0
+
+  # Remove Dock hide/show animation
+  defaults write com.apple.dock autohide-time-modifier -float 0
+}
+
+# -------------------------------------------------------------------
+# Configure Dock behaviour & layout
+#
+# PURPOSE:
+#   Tune the Dock for a cleaner, more predictable workflow without
+#   touching animation or performance-related settings.
+#
+# BEHAVIOUR:
+#   - Safe to re-run (idempotent)
+#   - Takes effect after script's final UI restart
+# -------------------------------------------------------------------
+setup_dock() {
+
+  # Set Dock icon size (balanced between density and readability)
+  defaults write com.apple.dock tilesize -int 36
+
+  # Automatically hide and show the Dock
+  # defaults write com.apple.dock autohide -bool true
+
+  # Minimise windows into their application's Dock icon
+  # defaults write com.apple.dock minimize-to-application -bool true
+
+  # Show indicator lights for running applications
+  defaults write com.apple.dock show-process-indicators -bool true
+
+  # Do not show recent applications in the Dock
+  defaults write com.apple.dock show-recents -bool false
+
+  # Do not automatically rearrange Spaces based on most recent use
+  defaults write com.apple.dock mru-spaces -bool false
+}
+
+# -------------------------------------------------------------------
+# Configure screenshot behaviour
+#
+# PURPOSE:
+#   Make screenshots predictable, high-quality, and easy to find.
+#
+# BEHAVIOUR:
+#   - Creates the screenshot directory if it does not exist
+#   - Applies immediately
+#   - Safe to re-run (idempotent)
+#   - Takes effect after script's final UI restart
+# -------------------------------------------------------------------
+setup_screenshots() {
+
+  # Ensure screenshot directory exists
+  mkdir -p "${HOME}/Pictures/Screenshots"
+
+  # Save screenshots to ~/Pictures/Screenshots
+  defaults write com.apple.screencapture location -string "${HOME}/Pictures/Screenshots"
+
+  # Save screenshots in PNG format (lossless, widely compatible)
+  defaults write com.apple.screencapture type -string "png"
+
+  # Disable window shadow in screenshots (cleaner images)
+  defaults write com.apple.screencapture disable-shadow -bool true
+}
+
+# -------------------------------------------------------------------
+# Main function to run all checks and actions
+# -------------------------------------------------------------------
+main() {
+  log_info "Setting up mouse and trackpad..."
+  setup_mouse_and_trackpad
+
+  log_info "Setting up keyboard shortcuts..."
+  setup_keyboard_shortcuts
+
+  log_info "Setting up macOS performance..."
+  setup_macos_performance
+
+  log_info "Setting up Finder..."
+  setup_finder
+
+  log_info "Setting up Dock..."
+  setup_dock
+
+  log_info "Setting up screenshots..."
+  setup_screenshots
+
+  # Restart UI services once so all defaults take effect
+  log_info "Restarting UI services..."
+  killall Finder Dock SystemUIServer >/dev/null 2>&1 || true
+
+  log_success "macOS defaults configured"
+
+  log_warn "Manual steps required:"
+  log_info "  Dock: Add Downloads folder to Dock; right-click stack > Sort by Date Added, Display as Folder, View content as Fan"
+  log_info "  Pointer Control: System Settings > Accessibility > Pointer Control > Trackpad Options > Enable three-finger drag"
+  log_info "  Pointer Control: System Settings > Accessibility > Pointer Control > Trackpad Options > Adjust spring-loading delay"
+  log_info "  Accessibility: System Settings > Accessibility > Display > enable Reduce transparency, Reduce motion"
+  log_info "  Accessibility: System Settings > Accessibility > Zoom > enable Use scroll gesture with modifier keys to zoom (e.g. Control + scroll)"
+}
+
+# Run the main function
+main
+
+log_script_end "$SCRIPT_NAME"

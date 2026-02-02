@@ -1,0 +1,53 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install zsh-syntax-highlighting plugin
+#
+# SCOPE:
+#   - Runs on: macOS, Linux
+#   - Lifecycle: run_onchange (updates when script changes)
+#
+# BEHAVIOUR:
+#   - Idempotent (git clone handles existing repos)
+#   - Clones to Oh My Zsh custom plugins directory
+#
+# NOTES:
+#   - Requires Oh My Zsh to be installed first
+#   - Requires git (from base packages)
+#   - Enable in .zshrc via chezmoi dotfiles
+# -------------------------------------------------------------------
+
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+SCRIPT_NAME="20-shell/23-zsh-syntax-highlighting.sh"
+log_script_start "$SCRIPT_NAME"
+
+# Determine custom plugins directory
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+PLUGIN_DIR="$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+
+# Check if already installed
+if [ -d "$PLUGIN_DIR" ]; then
+  log_info "zsh-syntax-highlighting already installed"
+  # Update existing installation
+  log_info "Updating zsh-syntax-highlighting..."
+  cd "$PLUGIN_DIR" && git pull --quiet
+  log_success "zsh-syntax-highlighting updated"
+  log_script_end "$SCRIPT_NAME"
+  exit 0
+fi
+
+log_info "Installing zsh-syntax-highlighting..."
+
+# Clone plugin
+if git clone --quiet https://github.com/zsh-users/zsh-syntax-highlighting "$PLUGIN_DIR"; then
+  log_success "zsh-syntax-highlighting installed"
+  log_script_end "$SCRIPT_NAME"
+else
+  log_error "Failed to install zsh-syntax-highlighting"
+  log_script_end "$SCRIPT_NAME"
+  exit 1
+fi

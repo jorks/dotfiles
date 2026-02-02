@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+# Post-install configuration for macadmin kit
+#
+# SCOPE:
+# - Runs on: macOS
+# - Lifecycle: runs after Brewfile is applied
+#
+# BEHAVIOUR:
+# - Idempotent (safe to re-run)
+# - Documents manual installation requirements
+#
+# NOTES:
+# - Apps not in Homebrew are documented below for manual install
+# -------------------------------------------------------------------
+
+# shellcheck source=../../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+log_info "macadmin kit setup complete"
+
+# -------------------------------------------------------------------
+# MANUAL INSTALLS (not available via Homebrew)
+# -------------------------------------------------------------------
+#
+# Jamf Admin
+#   Download: https://www.jamf.com/resources/product-documentation/
+#   Notes: Requires Jamf Pro subscription. Install from Jamf Pro server.
+#
+# Jamf Connect
+#   Download: https://www.jamf.com/products/jamf-connect/
+#   Notes: Requires Jamf Connect subscription. Deploy via MDM.
+#
+# Jamf Protect
+#   Download: https://www.jamf.com/products/jamf-protect/
+#   Notes: Requires Jamf Protect subscription. Deploy via MDM.
+#
+# Jamf Compliance Editor
+#   Download: https://github.com/jamf/compliance-editor
+#   Notes: GitHub releases page.
+#
+# iMazing Profile Editor
+#   Download: https://imazing.com/profile-editor
+#   Notes: Free, no account required.
+#
+# Low Profile
+#   Download: https://github.com/ninxsoft/LowProfile
+#   Notes: GitHub releases page.
+#
+# MUT (Massive Update Tool)
+#   Download: https://github.com/jamf/mut
+#   Notes: GitHub releases page. For bulk Jamf Pro updates.
+#
+# JamfCheck
+#   Download: Internal/custom tool
+#   Notes: Check with your IT team for deployment.
+#
+# jamfStatus
+#   Download: Internal/custom tool
+#   Notes: Check with your IT team for deployment.
+#
+# ESFPlayground
+#   Download: Apple Developer tools
+#   Notes: Part of Endpoint Security framework samples.
+#
+# Discovery
+#   Download: Apple Developer tools
+#   Notes: Part of Apple developer utilities.
+#
+# -------------------------------------------------------------------

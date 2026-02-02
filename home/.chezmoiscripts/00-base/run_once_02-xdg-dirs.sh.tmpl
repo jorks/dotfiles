@@ -1,0 +1,45 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Create XDG Base Directory structure and export variables
+#
+# SCOPE:
+#   - Runs on: macOS, Linux
+#   - Lifecycle: run_once
+#
+# BEHAVIOUR:
+#   - Idempotent
+#   - Creates directories if missing
+#   - Exports XDG variables for use by subsequent scripts
+#
+# NOTES:
+#   - Critical early step - ensures tools respect XDG from the start
+#   - Follows XDG Base Directory Specification
+# -------------------------------------------------------------------
+
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+SCRIPT_NAME="00-base/02-xdg-dirs.sh"
+log_script_start "$SCRIPT_NAME"
+
+# Set XDG defaults (standard locations)
+# These exports ensure subsequent scripts in this apply session can reference XDG paths.
+# User shells get these from ~/.config/shell/xdg.zsh instead.
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+# Create directories
+for xdg_dir in "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOME"; do
+  if [ ! -d "$xdg_dir" ]; then
+    log_info "Creating directory: $xdg_dir"
+    mkdir -p "$xdg_dir"
+  fi
+done
+
+log_success "XDG directories ready"
+log_script_end "$SCRIPT_NAME"

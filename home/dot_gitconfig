@@ -1,0 +1,101 @@
+# ~/.gitconfig
+#
+# PURPOSE
+# -------
+# Shared Git configuration.
+#
+# This file contains portable settings used across macOS and Linux.
+# Identity and machine-specific settings live in ~/.gitconfig.local
+
+# -------------------------------------------------------------------
+# Core behaviour
+# -------------------------------------------------------------------
+
+[core]
+  excludesfile = ~/.gitignore_global
+  attributesfile = ~/.gitattributes
+  pager = delta
+
+[color]
+  ui = auto
+
+# -------------------------------------------------------------------
+# Defaults & safety
+# -------------------------------------------------------------------
+
+[init]
+  defaultBranch = main
+
+[fetch]
+  prune = true
+  pruneTags = true
+
+[pull]
+  rebase = false
+
+[push]
+  default = simple
+  autoSetupRemote = true
+
+[rebase]
+  autoStash = true
+
+# -------------------------------------------------------------------
+# Diff improvements
+# -------------------------------------------------------------------
+
+[diff]
+  algorithm = histogram
+  colorMoved = default
+  tool = vimdiff
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  features = side-by-side line-numbers decorations
+  syntax-theme = default
+  navigate = true
+
+[difftool]
+  prompt = false
+
+[difftool "vimdiff"]
+  cmd = vimdiff "$LOCAL" "$REMOTE"
+
+# -------------------------------------------------------------------
+# Aliases (high-signal only)
+# -------------------------------------------------------------------
+
+[alias]
+  st = status -sb
+  co = checkout
+  br = branch
+  lg = log --oneline --decorate --graph --all
+  last = log -1 HEAD
+
+# -------------------------------------------------------------------
+# Git LFS
+# -------------------------------------------------------------------
+
+[filter "lfs"]
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f
+
+# -------------------------------------------------------------------
+# Local overrides (machine-specific, not in git)
+# -------------------------------------------------------------------
+# ~/.gitconfig.local is created once by chezmoi, then manually editable.
+# It contains:
+#   - [user] name, email, signingkey (macOS)
+#   - [core] editor
+#   - [gpg] SSH signing config (macOS, requires 1Password)
+#   - [commit] gpgsign = true (macOS)
+#
+# The signingkey is configured by a chezmoi script that fetches your
+# public key from github.com/<username>.keys
+
+[include]
+  path = ~/.gitconfig.local

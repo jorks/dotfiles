@@ -1,0 +1,80 @@
+#!/usr/bin/env sh
+set -eu
+
+# -------------------------------------------------------------------
+# PURPOSE:
+#   Install base CLI packages on Linux via apt
+#
+# SCOPE:
+#   - Runs on: Linux only (excluded on macOS via .chezmoiignore)
+#   - Lifecycle: run_onchange (re-runs when package list changes)
+#
+# BEHAVIOUR:
+#   - Idempotent (apt handles already-installed packages)
+#   - Controlled by .install_base_cli config flag
+#   - Requires sudo
+#
+# NOTES:
+#   - Package list intentionally minimal (CLI tools only)
+#   - Assumes apt (Ubuntu/Debian/Amazon Linux)
+#   - KEEP IN SYNC with run_onchange_10-base-cli-packages-macos.sh.tmpl
+# -------------------------------------------------------------------
+
+# shellcheck source=../../_lib/log.sh
+. "{{ .chezmoi.sourceDir }}/_lib/log.sh"
+
+SCRIPT_NAME="10-packages/11-base-cli-packages-linux.sh"
+
+{{- if ne .chezmoi.os "linux" }}
+log_script_skip "$SCRIPT_NAME" "not Linux"
+exit 0
+{{- end }}
+
+{{- if not .install_base_cli }}
+log_script_skip "$SCRIPT_NAME" "install_base_cli=false"
+exit 0
+{{- end }}
+
+log_script_start "$SCRIPT_NAME"
+
+# ┌─────────────────────────────────────────────────────────────────┐
+# │ BASE CLI PACKAGES                                               │
+# │                                                                 │
+# │ ⚠️  WARNING: Keep this list in sync with the macOS variant!    │
+# │    File: 10-packages/run_onchange_10-base-cli-packages-macos.sh.tmpl │
+# │                                                                 │
+# │ Some package names differ from macOS (e.g., fd-find vs fd).    │
+# │ This drift is acceptable - just keep intent aligned.           │
+# └─────────────────────────────────────────────────────────────────┘
+
+PACKAGES="
+  curl
+  wget
+  git
+  fzf
+  ripgrep
+  fd-find
+  jq
+  neovim
+  nano
+  shellcheck
+  tree
+  htop
+  git-delta
+"
+
+log_info "Installing base CLI packages via apt (requires admin privileges)..."
+log_warn "You may be prompted for your password"
+
+# Install packages (apt handles already-installed gracefully)
+for pkg in $PACKAGES; do
+  log_info "Installing: $pkg"
+  if sudo apt-get install -y "$pkg"; then
+    log_success "$pkg installed"
+  else
+    log_warn "Failed to install $pkg (continuing)"
+  fi
+done
+
+log_success "Base CLI packages installed"
+log_script_end "$SCRIPT_NAME"
