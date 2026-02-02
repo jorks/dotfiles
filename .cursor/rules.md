@@ -378,3 +378,32 @@ When modifying this repository:
 - Call out missing documentation updates
 
 Prefer boring, proven solutions.
+
+---
+
+## Git Commit Standards
+
+This repository uses [Conventional Commits](https://www.conventionalcommits.org/).
+
+Format:
+
+```
+<type>: <description>
+
+[optional body]
+```
+
+Types:
+
+- `feat` – New feature or capability
+- `fix` – Bug fix
+- `docs` – Documentation only
+- `refactor` – Code change that neither fixes a bug nor adds a feature
+- `chore` – Maintenance tasks (dependencies, tooling)
+
+Rules:
+
+- Use lowercase for type and description
+- No period at end of subject line
+- Body explains "why" if not obvious from subject
+- Do NOT use `--trailer` flag or add `Co-authored-by` messages

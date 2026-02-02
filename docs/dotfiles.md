@@ -103,3 +103,13 @@ Shell configs, editor preferences, SSH templates, XDG directories. User-level co
 ## What doesn't
 
 Install scripts, Brewfiles, system setup. Those live in `.chezmoiscripts/` or outside chezmoi entirely.
+
+## App configs outside dotfiles
+
+Not everything belongs in version control. Some apps have their own sync story:
+
+**Cloud sync** - Use it when available. VS Code syncs via GitHub, password managers sync themselves, etc. Let apps handle their own config.
+
+**Manual export** - Apps like iStats Menu, Raycast, and Cursor lack cloud sync (or paywall it). These often embed license keys or use binary formats that can't be easily audited for secrets. Export to your cloud storage of choice (iCloud, Dropbox, etc.) instead of committing here. Import on new machines, re-enter secrets from your password vault.
+
+The rule: if you can't see what's in it, or it might contain secrets, don't commit it.
