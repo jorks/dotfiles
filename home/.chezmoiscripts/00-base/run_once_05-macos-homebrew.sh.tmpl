@@ -34,14 +34,33 @@ fi
 
 log_info "Installing Homebrew..."
 
-# Download and run official install script (non-interactive)
-if NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
-  log_success "Homebrew installed"
+INSTALL_CMD='/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+
+run_homebrew_install() {
+  sh -c "$INSTALL_CMD"
+}
+
+run_homebrew_install_noninteractive() {
+  NONINTERACTIVE=1 sh -c "$INSTALL_CMD"
+}
+
+if [ -n "${CI:-}" ]; then
+  log_info "CI detected: running Homebrew install non-interactively"
+  run_homebrew_install_noninteractive
+
+elif sudo -n true >/dev/null 2>&1; then
+  log_info "Passwordless sudo available: running Homebrew install non-interactively"
+  run_homebrew_install_noninteractive
+
 else
+  log_info "Running Homebrew install interactively (may prompt for sudo)"
+  run_homebrew_install
+fi || {
   log_error "Homebrew installation failed"
   log_script_end "$SCRIPT_NAME"
   exit 1
-fi
+}
+
 
 # Add to PATH for this session (chezmoi sets up shell PATH permanently via dotfiles)
 if [ -x /opt/homebrew/bin/brew ]; then
