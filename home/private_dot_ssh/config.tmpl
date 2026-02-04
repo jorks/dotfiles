@@ -21,6 +21,9 @@
 Host *
   IdentityAgent "{{ $agent }}"
 {{- end }}
+# 1Password SSH agent not enabled yet.
+# Open 1Password → Settings → Developer → Enable SSH Agent,
+# then re-run `chezmoi apply`.
 {{- end }}
 
 # -------------------------------------------------------------------
