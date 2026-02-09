@@ -1,28 +1,29 @@
-# PHP Dev Kit
+# Python Dev Kit – Formulae
 #
-# PHP-specific development environment.
-# Use case: Laravel, WordPress, or general PHP development.
+# Python-specific development environment.
+# Use case: Python application development, scripting, automation.
 
 # ===================================================================
-# Package Managers
+# Python Runtimes
 # ===================================================================
 
-brew "composer"                        # PHP dependency manager
+brew "python@3.12"                     # Primary Python version
 
 # ===================================================================
-# PHP Environment
+# Package Management
 # ===================================================================
 
-cask "herd"                            # Fast PHP dev environment
+brew "pipx"                            # Install Python CLI tools in isolation
 
 # ===================================================================
-# Static Analysis
+# Version Management
 # ===================================================================
 
-# brew "phpstan"                       # PHP static analysis (optional)
+# brew "pyenv"                         # Python version manager (optional)
 
 # ===================================================================
-# IDE
+# Code Quality
 # ===================================================================
 
-cask "phpstorm"                        # JetBrains PHP IDE
+brew "pre-commit"                      # Git hook framework
+brew "ruff"                            # Fast Python linter

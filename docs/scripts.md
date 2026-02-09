@@ -64,7 +64,7 @@ Orchestrates optional "kits" - groups of related tools you might not want on eve
 
 **`30-apply-kits.sh`** – The kit orchestrator. Loops through enabled kits in `.chezmoi.toml`, applies their Brewfiles from `~/.config/kits/`, runs optional `setup.sh` scripts for post-install configuration.
 
-Kits are defined in `home/dot_config/kits/<name>/`. Each kit is just a Brewfile (packages to install) and an optional `setup.sh` (config that can't be expressed declaratively). The orchestrator discovers and applies them automatically based on user config.
+Kits are defined in `home/dot_config/kits/<name>/`. Each kit has Brewfile.formula and/or Brewfile.casks (packages to install) and an optional `setup.sh` (config that can't be expressed declaratively). The orchestrator discovers and applies them automatically based on user config.
 
 This keeps capability-based installation flexible without custom logic per kit. Brewfiles are data. The orchestrator is generic.
 
@@ -94,7 +94,7 @@ Available functions:
 - `log_script_start`, `log_script_end` – Script lifecycle markers
 - `log_script_skip` – For OS-specific scripts that exit early
 
-**`brew.sh`** – Brewfile application logic. Ensures Homebrew is in PATH (critical since each chezmoi script runs in a new subprocess). `apply_brewfile()` handles missing files, empty files, and errors gracefully.
+**`brew.sh`** – Brewfile application logic. Ensures Homebrew is in PATH (critical since each chezmoi script runs in a new subprocess). Formulae are strict (fail-fast); casks are best-effort. `apply_brewfile()` handles missing files, empty files, and formula errors gracefully.
 
 **`checks.sh`** – Common checks like "is this macOS?", "is Homebrew installed?", etc.
 

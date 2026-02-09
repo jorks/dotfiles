@@ -1,13 +1,7 @@
-# Mac Admin Kit
+# Mac Admin Kit – Casks
 #
 # Mac/IT administration and management tools.
 # Use case: Mac admins, IT professionals, MDM management.
-
-# ===================================================================
-# Dependencies
-# ===================================================================
-
-brew "mas"                             # Mac App Store CLI
 
 # ===================================================================
 # Package Inspection

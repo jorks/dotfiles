@@ -1,4 +1,18 @@
 #!/usr/bin/env sh
+# run_onchange: hash each kit's Brewfile.formula / Brewfile.casks so script content changes when they do
+# Kit names and directory names: always hyphen (e.g. php-dev, python-dev). Never underscore.
+{{- range $kit, $enabled := .kits }}
+{{- if $kit }}
+{{- $formula := joinPath "dot_config/kits" $kit "Brewfile.formula" }}
+{{- $casks := joinPath "dot_config/kits" $kit "Brewfile.casks" }}
+{{- if stat (joinPath $.chezmoi.sourceDir $formula) }}
+# {{ $kit }} formula {{ include $formula | sha256sum }}
+{{- end }}
+{{- if stat (joinPath $.chezmoi.sourceDir $casks) }}
+# {{ $kit }} casks {{ include $casks | sha256sum }}
+{{- end }}
+{{- end }}
+{{- end }}
 set -eu
 
 # -------------------------------------------------------------------
@@ -11,7 +25,7 @@ set -eu
 #
 # BEHAVIOUR:
 #   - Loops through enabled kits in .kits configuration
-#   - Applies Brewfile for each kit (primary mechanism)
+#   - Applies Brewfile.formula / Brewfile.casks for each kit (primary mechanism)
 #   - Runs optional setup.sh for custom configuration
 #   - Kits are co-located in ~/.config/kits/
 #
@@ -47,14 +61,13 @@ fi
 # Track if any kits were applied
 APPLIED_COUNT=0
 
-# Loop through enabled kits dynamically from config
+# Loop through enabled kits (one block per enabled kit)
 {{- range $kit, $enabled := .kits }}
-{{- if $enabled }}
+{{- if and $enabled $kit }}
 
 # Kit: {{ $kit }}
 KIT_NAME="{{ $kit }}"
-KIT_DIR="$KITS_DIR/$KIT_NAME"
-BREWFILE="$KIT_DIR/Brewfile"
+KIT_DIR="$KITS_DIR/{{ $kit }}"
 SETUP_SCRIPT="$KIT_DIR/setup.sh"
 
 if [ ! -d "$KIT_DIR" ]; then
@@ -62,9 +75,9 @@ if [ ! -d "$KIT_DIR" ]; then
 else
   log_info "Processing kit: $KIT_NAME"
   
-  # Apply Brewfile (primary mechanism)
-  if [ -f "$BREWFILE" ]; then
-    if apply_brewfile "$BREWFILE"; then
+  # Apply Brewfile.formula (strict) and Brewfile.casks (best-effort)
+  if [ -f "$KIT_DIR/Brewfile.formula" ] || [ -f "$KIT_DIR/Brewfile.casks" ]; then
+    if apply_brewfile "$KIT_DIR"; then
       APPLIED_COUNT=$((APPLIED_COUNT + 1))
     else
       log_error "Kit Brewfile failed: $KIT_NAME"
@@ -72,7 +85,7 @@ else
       exit 1
     fi
   else
-    log_warn "No Brewfile found for kit: $KIT_NAME"
+    log_warn "No Brewfile.formula or Brewfile.casks for kit: $KIT_NAME"
   fi
   
   # Run optional setup script (outliers only)

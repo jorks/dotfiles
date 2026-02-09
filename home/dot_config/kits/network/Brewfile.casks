@@ -1,31 +1,13 @@
-# Network Kit
+# Network Kit – Casks
 #
 # Network analysis, scanning, and remote access tools.
 # Use case: Network troubleshooting, remote administration.
-
-# ===================================================================
-# Dependencies
-# ===================================================================
-
-brew "mas"                             # Mac App Store CLI
-
-# ===================================================================
-# Network Scanning
-# ===================================================================
-
-brew "nmap"                            # Network scanner
 
 # ===================================================================
 # WiFi Analysis
 # ===================================================================
 
 # cask "netspot"                       # WiFi analysis (requires license)
-
-# ===================================================================
-# Packet Analysis
-# ===================================================================
-
-# cask "wireshark"                     # Packet analyzer (optional)
 
 # ===================================================================
 # Remote Access
