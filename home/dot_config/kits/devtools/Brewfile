@@ -21,6 +21,19 @@ brew "shellcheck"                      # Shell script linter
 brew "tree"                            # Directory listing
 
 # ===================================================================
+# Languages & Runtimes
+# ===================================================================
+
+brew "volta"                           # Node.js toolchain manager
+brew "uv"                              # Python package/project manager
+brew "pyenv"                           # Python version manager (escape hatch)
+cask "herd"                            # PHP runtime + local dev environment
+# brew "rbenv"                         # Ruby version manager (if needed)
+# brew "go"                            # Go toolchain (if needed)
+# mas "Xcode", id: 497799835           # Swift toolchain + SPM support (if needed)
+# brew "sdkman-cli"                    # Java SDK manager (if needed)
+
+# ===================================================================
 # Containers
 # ===================================================================
 
@@ -45,10 +58,10 @@ cask "warp"                            # AI-powered terminal
 # Editors
 # ===================================================================
 
-cask "cursor"                          # AI-first code editor
-cask "sublime-merge"                   # Git client
 cask "sublime-text"                    # Text editor
 cask "visual-studio-code"              # Microsoft code editor
+cask "cursor"                          # AI-first code editor
+cask "claude-code"                     # AI code assistant
 # cask "zed"                           # High-performance editor
 
 # ===================================================================
@@ -62,6 +75,7 @@ cask "jetbrains-toolbox"               # JetBrains IDE manager
 # ===================================================================
 
 cask "github"                          # GitHub Desktop
+cask "sublime-merge"                   # Git client
 
 # ===================================================================
 # API & HTTP Tools
