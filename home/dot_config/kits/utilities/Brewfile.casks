@@ -30,7 +30,8 @@ cask "markedit"                         # Markdown editor
 cask "appcleaner"                      # App uninstaller
 cask "keka"                            # File archiver
 cask "omnidisksweeper"                 # Disk space analyzer
-cask "suspicious-package"              # Look inside pkg files
+cask "suspicious-package"              # Inspect installer packages
+cask "apparency"                       # Inspect application bundles
 
 # ===================================================================
 # Quick Look Extensions
