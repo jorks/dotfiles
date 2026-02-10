@@ -72,7 +72,7 @@ install_casks_from_brewfile() {
   [ ! -f "$brewfile" ] && return 0
   [ ! -s "$brewfile" ] && return 0
 
-  grep -E '^cask "' "$brewfile" | sed 's/^cask "\([^"]*\)".*/\1/' | while read -r cask_name; do
+  grep -v -E '^[[:space:]]*#' "$brewfile" | grep -E '^[[:space:]]*cask "' | sed 's/^[[:space:]]*cask "\([^"]*\)".*/\1/' | while read -r cask_name; do
     install_cask_once "$cask_name"
   done
 }
