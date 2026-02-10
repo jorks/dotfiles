@@ -7,7 +7,7 @@
 # Menu Bar
 # ===================================================================
 
-cask "hiddenbar"                       # Hide menu bar icons
+mas "Hidden Bar", id: 1452453066       # Hide menu bar icons
 cask "istat-menus"                     # System monitor
 cask "monitorcontrol"                  # External display brightness
 
