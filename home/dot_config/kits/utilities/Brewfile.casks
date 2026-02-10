@@ -12,11 +12,16 @@ cask "istat-menus"                     # System monitor
 cask "monitorcontrol"                  # External display brightness
 
 # ===================================================================
-# Window Management
+# Launcher
 # ===================================================================
 
 cask "raycast"                         # Launcher and productivity
-# cask "rectangle"                       # Window snapping
+
+# ===================================================================
+# Docs & Writing
+# ===================================================================
+
+cask "markedit"                         # Markdown editor
 
 # ===================================================================
 # Cleanup & Compression
@@ -25,13 +30,17 @@ cask "raycast"                         # Launcher and productivity
 cask "appcleaner"                      # App uninstaller
 cask "keka"                            # File archiver
 cask "omnidisksweeper"                 # Disk space analyzer
+cask "suspicious-package"              # Look inside pkg files
 
 # ===================================================================
 # Quick Look Extensions
 # ===================================================================
 
-cask "qlcolorcode"                     # Syntax highlighting
-cask "qlimagesize"                     # Image dimensions
-cask "qlmarkdown"                      # Markdown preview
-cask "qlstephen"                       # Plain text files
-cask "quicklook-json"                  # JSON preview
+# Note: The following Quick Look extensions are commented out —
+# unfortunately they’ve been abandoned by their developers
+# and are no longer maintained. =/ Such a shame!
+
+#cask "qlmarkdown"                      # Markdown preview
+#cask "qlcolorcode"                     # Syntax highlighting
+#cask "qlstephen"                       # Plain text files
+#cask "quicklook-json"                  # JSON preview
