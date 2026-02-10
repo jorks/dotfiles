@@ -20,6 +20,11 @@ brew "jq"                              # JSON processor
 brew "shellcheck"                      # Shell script linter
 brew "tree"                            # Directory listing
 brew "pastel"                          # Manipulate colors
+brew "doppler"                         # Secrets management
+brew "pre-commit"                      # Local code quality enforcement
+brew "just"                            # Task runner (Make alternative)
+brew "awscli"                          # Cloud baseline
+brew "btop"                            # System visibility
 
 # ===================================================================
 # Languages & Runtimes

@@ -69,4 +69,4 @@ cask "utm"                             # Virtual machine host
 mas "CodeRunner", id: 955297617        # Multi-language code editor
 mas "Icon Set Creator", id: 452747075  # App icon generator
 mas "Amphetamine", id: 937984704       # Prevent sleep
-#cask "pastel"                          # Color palette manager
+mas "Pastel", id: 413897608          # Color palette manager
