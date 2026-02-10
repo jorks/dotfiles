@@ -65,8 +65,8 @@
 {{- $kits_security    := promptBoolOnce . "kits.security"    "Kit: security?                     (1Password, secret scanning)" false -}}
 {{- $kits_devtools    := promptBoolOnce . "kits.devtools"    "Kit: devtools?                     (editors, containers, terminals)" false -}}
 {{- $kits_fonts       := promptBoolOnce . "kits.fonts"       "Kit: fonts?                        (design and coding fonts)" false -}}
-{{- $kits_php_dev     := promptBoolOnce . "kits.php_dev"     "Kit: php_dev?                      (PHP, Composer, PhpStorm)" false -}}
-{{- $kits_python_dev  := promptBoolOnce . "kits.python_dev"  "Kit: python_dev?                   (Python, pipx, PyCharm)" false -}}
+{{- $kits_phpdev     := promptBoolOnce . "kits.php-dev"     "Kit: php-dev?                      (PHP, Composer, PhpStorm)" false -}}
+{{- $kits_pythondev  := promptBoolOnce . "kits.python-dev"  "Kit: python-dev?                   (Python, pipx, PyCharm)" false -}}
 {{- $kits_macadmin    := promptBoolOnce . "kits.macadmin"    "Kit: macadmin?                     (IT/sysadmin tools)" false -}}
 {{- $kits_network     := promptBoolOnce . "kits.network"     "Kit: network?                      (network analysis, remote access)" false -}}
 
@@ -88,7 +88,7 @@
   security = {{ $kits_security }}
   devtools = {{ $kits_devtools }}
   fonts = {{ $kits_fonts }}
-  php_dev = {{ $kits_php_dev }}
-  python_dev = {{ $kits_python_dev }}
+  "php-dev" = {{ $kits_phpdev }}
+  "python-dev" = {{ $kits_pythondev }}
   macadmin = {{ $kits_macadmin }}
   network = {{ $kits_network }}

@@ -1,0 +1,11 @@
+# Security Kit – Casks
+#
+# Password management and secret scanning tools.
+# Use case: All machines handling credentials or code.
+
+# ===================================================================
+# Password Management
+# ===================================================================
+
+cask "1password"                       # Password manager
+cask "1password-cli"                   # 1Password CLI (op)

@@ -106,13 +106,14 @@ Structure:
 ```
 
 home/dot_config/kits/<kit-name>/
-├── Brewfile
+├── Brewfile.formula   # formulae + mas (strict), optional
+├── Brewfile.casks    # casks (best-effort), optional
 └── setup.sh (optional)
 
 ```
 
 Characteristics:
-- Declarative first (Brewfile)
+- Declarative first (Brewfile.formula / Brewfile.casks)
 - Imperative only when necessary (`setup.sh`)
 - Auto-discovered by the orchestrator
 - Enabled via prompts stored in local chezmoi config

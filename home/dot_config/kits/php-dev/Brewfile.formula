@@ -1,0 +1,16 @@
+# PHP Dev Kit – Formulae
+#
+# PHP-specific development environment.
+# Use case: Laravel, WordPress, or general PHP development.
+
+# ===================================================================
+# Package Managers
+# ===================================================================
+
+brew "composer"                        # PHP dependency manager
+
+# ===================================================================
+# Static Analysis
+# ===================================================================
+
+# brew "phpstan"                       # PHP static analysis (optional)

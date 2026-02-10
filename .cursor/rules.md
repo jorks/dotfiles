@@ -96,11 +96,15 @@ Scripts may source libraries using:
 
 ## Kit Brewfile Standards
 
-All kit Brewfiles MUST follow this structure.
+**Kit names:** Use hyphens only (e.g. `php-dev`, `python-dev`). Never underscores. Directory name under `dot_config/kits/` and config key in `[data.kits]` must match.
+
+Each kit uses **Brewfile.formula** (formulae and `mas`; applied strictly via `brew bundle`) and/or **Brewfile.casks** (casks; applied best-effort one-by-one). Put `brew` and `mas` in Brewfile.formula; put `cask` in Brewfile.casks. A kit can have only formula, only casks, or both.
+
+All kit Brewfiles (both files) MUST follow this structure.
 
 ### Header
 
-Every Brewfile MUST begin with a descriptive header:
+Every Brewfile.formula and Brewfile.casks MUST begin with a descriptive header:
 
 ```ruby
 # <Kit Name> Kit
@@ -135,19 +139,20 @@ Within each section, packages MUST be listed in **alphabetical order** by packag
 
 ### Mac App Store Apps
 
-When a kit includes Mac App Store apps:
+When a kit includes Mac App Store apps (put these in **Brewfile.formula** only):
 
-1. Include `brew "mas"` at the top of the Brewfile (in a Dependencies section)
-2. Use the `mas` directive with app name and ID
+1. Include `brew "mas"` at the top of Brewfile.formula (in a Dependencies section)
+2. Use the `mas` directive with app name and ID in Brewfile.formula
 3. App IDs can be found via `mas search <name>` or App Store URLs
 
 ### Complete Example
 
+**Brewfile.formula** (formulae and mas; strict):
+
 ```ruby
-# Productivity Kit
+# My Kit – Formulae
 #
-# Browsers, communication, task management, and writing tools.
-# Use case: Personal and work laptops.
+# One-line description. Use case: who should enable.
 
 # ===================================================================
 # Dependencies
@@ -156,26 +161,25 @@ When a kit includes Mac App Store apps:
 brew "mas"                             # Mac App Store CLI
 
 # ===================================================================
+# Mac App Store
+# ===================================================================
+
+mas "Amphetamine", id: 937984704       # Prevent sleep
+```
+
+**Brewfile.casks** (casks only; best-effort):
+
+```ruby
+# My Kit – Casks
+#
+# Same description. Use case: who should enable.
+
+# ===================================================================
 # Browsers
 # ===================================================================
 
 cask "firefox"                         # Mozilla browser
 cask "google-chrome"                   # Google browser
-cask "microsoft-edge"                  # Microsoft browser
-
-# ===================================================================
-# Communication
-# ===================================================================
-
-cask "slack"                           # Team messaging
-cask "zoom"                            # Video conferencing
-
-# ===================================================================
-# Mac App Store
-# ===================================================================
-
-mas "Amphetamine", id: 937984704       # Prevent sleep
-mas "Things 3", id: 904280696          # Task manager
 ```
 
 ---

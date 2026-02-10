@@ -1,0 +1,16 @@
+# PHP Dev Kit – Casks
+#
+# PHP-specific development environment.
+# Use case: Laravel, WordPress, or general PHP development.
+
+# ===================================================================
+# PHP Environment
+# ===================================================================
+
+cask "herd"                            # Fast PHP dev environment
+
+# ===================================================================
+# IDE
+# ===================================================================
+
+cask "phpstorm"                        # JetBrains PHP IDE

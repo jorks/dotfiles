@@ -1,0 +1,10 @@
+# Python Dev Kit – Casks
+#
+# Python-specific development environment.
+# Use case: Python application development, scripting, automation.
+
+# ===================================================================
+# IDE
+# ===================================================================
+
+cask "pycharm"                         # JetBrains Python IDE

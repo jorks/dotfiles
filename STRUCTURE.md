@@ -45,8 +45,9 @@ dotfiles/
         ├── vim/
         └── kits/                # capability Brewfiles
             └── <kit-name>/
-                ├── Brewfile
-                └── setup.sh.tmpl   # optional post-install script
+                ├── Brewfile.formula   # formulae (strict), optional
+                ├── Brewfile.casks    # casks (best-effort), optional
+                └── setup.sh.tmpl     # optional post-install script
 ```
 
 ## How it's organized
@@ -63,7 +64,7 @@ Everything here maps into `$HOME` when you run `chezmoi apply`. Dotfiles at the 
 
 Templates (`.tmpl` suffix) are rendered with data from `.chezmoi.toml` before being applied. This keeps personal values out of version control.
 
-The `kits/` subdirectory is where capability Brewfiles live. They're applied to `~/.config/kits/` and consumed by `.chezmoiscripts/30-kits/` during apply. Optional `setup.sh.tmpl` scripts handle post-install configuration that can't be expressed in a Brewfile (rendered to `setup.sh` by chezmoi).
+The `kits/` subdirectory is where capability Brewfiles live (Brewfile.formula and/or Brewfile.casks per kit). They're applied to `~/.config/kits/` and consumed by `.chezmoiscripts/30-kits/` during apply. Optional `setup.sh.tmpl` scripts handle post-install configuration that can't be expressed in Brewfiles (rendered to `setup.sh` by chezmoi).
 
 ### `home/_lib/` – source-only script libraries
 
@@ -130,7 +131,7 @@ Separate files for separate platforms. No branching logic within scripts - early
 
 ## Brewfiles
 
-All package installation goes through Brewfiles. No inline `brew install` in scripts. Scripts apply Brewfiles, they don't make installation decisions.
+All package installation goes through Brewfiles. Each kit has Brewfile.formula (formulae and mas; strict) and/or Brewfile.casks (casks; best-effort). No inline `brew install` in scripts. Scripts apply Brewfiles, they don't make installation decisions.
 
 **Exception:** Base CLI packages (`10-packages/`) use inline installation loops for auto-install on first apply. This is intentional - these foundational tools need to install immediately without manual Brewfile management. Kits use proper Brewfiles.
 
@@ -140,13 +141,13 @@ No conditionals inside Brewfiles - use separate files instead.
 
 Your work laptop doesn't need the same tools as your home desktop. Kits let you install groups of related tools only where they make sense.
 
-Each kit is a Brewfile (packages to install) and optional `setup.sh` (post-install config that can't be declarative). They live in `home/dot_config/kits/<name>/` and are applied to `~/.config/kits/` by chezmoi.
+Each kit uses Brewfile.formula and/or Brewfile.casks (packages to install) and optional `setup.sh` (post-install config that can't be declarative). They live in `home/dot_config/kits/<name>/` and are applied to `~/.config/kits/` by chezmoi. Kit names use hyphens only (e.g. `php-dev`, `python-dev`), never underscores.
 
 ### How kits work
 
 1. **Enable during first run** – `home/.chezmoi.toml.tmpl` prompts which kits you want
 2. **Kits are applied** – The `30-apply-kits.sh` orchestrator loops through enabled kits in your config
-3. **Brewfiles install packages** – Each kit's Brewfile gets applied via `brew bundle`
+3. **Brewfiles install packages** – Each kit's Brewfile.formula (and optionally Brewfile.casks) get applied via `brew bundle` / one-by-one cask install
 4. **Optional setup runs** – If a `setup.sh` exists, it runs for kit-specific configuration
 
 ### Example kits
@@ -190,7 +191,7 @@ Run `chezmoi diff` before applying to preview changes.
 Your answers are in `~/.config/chezmoi/chezmoi.toml`. Delete it to start fresh on next apply.
 
 **Package won't install?**  
-Check the Brewfile syntax. Run `brew bundle --file=<path>` manually to see the error.
+Check Brewfile.formula syntax with `brew bundle --file=<path>`. Casks are installed one-by-one (best-effort).
 
 **Script won't trigger?**  
 `run_once_` scripts track via hash. Delete `~/.local/share/chezmoi/.chezmoiscripts/.run-once-*` to force a rerun. `run_onchange_` scripts rerun when content changes — check the hash comment at the top.
@@ -199,7 +200,7 @@ Check the Brewfile syntax. Run `brew bundle --file=<path>` manually to see the e
 
 **New dotfile** → Drop it in `home/` with the appropriate prefix (`dot_`, `private_`, `create_`, `.tmpl`).
 
-**New kit** → Create `home/dot_config/kits/<name>/Brewfile`, add prompt to `home/.chezmoi.toml.tmpl`. The orchestrator handles the rest. Add optional `setup.sh.tmpl` for post-install config.
+**New kit** → Create `home/dot_config/kits/<name>/Brewfile.formula` and/or `Brewfile.casks`, add prompt to `home/.chezmoi.toml.tmpl`. The orchestrator handles the rest. Add optional `setup.sh.tmpl` for post-install config.
 
 **New platform setup** → Add `run_once_` script to `home/.chezmoiscripts/00-base/` with platform guard.
 

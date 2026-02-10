@@ -4,7 +4,7 @@ Kits are opt-in capability bundles — groups of related tools you might not wan
 
 ## How kits work
 
-Each kit is a Brewfile (list of packages) and optional `setup.sh.tmpl` (for config that can't be declarative). They live in `home/dot_config/kits/<name>/` and are discovered automatically by the kit orchestrator.
+Each kit uses `Brewfile.formula` and/or `Brewfile.casks` (packages) and optional `setup.sh.tmpl` (for config that can't be declarative). They live in `home/dot_config/kits/<name>/` and are discovered automatically by the kit orchestrator.
 
 ### Enabling kits
 
@@ -22,10 +22,10 @@ Your choices are stored in `~/.config/chezmoi/chezmoi.toml` and never committed.
 
 The `30-apply-kits.sh` orchestrator:
 1. Loops through enabled kits in your config
-2. Applies each kit's Brewfile via `brew bundle`
+2. Applies each kit's Brewfile.formula (strict) and Brewfile.casks (best-effort) via `brew bundle` / one-by-one cask install
 3. Runs optional `setup.sh` if it exists (rendered from `setup.sh.tmpl`)
 
-This happens automatically during `chezmoi apply`. Change a kit's Brewfile, rerun apply, packages install.
+This happens automatically during `chezmoi apply`. Change a kit's Brewfiles, rerun apply, packages install.
 
 ## Example kits
 
@@ -34,38 +34,41 @@ This happens automatically during `chezmoi apply`. Change a kit's Brewfile, reru
 - **utilities** – Menu bar apps, window management, Quick Look extensions.
 - **php-dev / python-dev** – Language-specific tooling and IDEs.
 
-Browse `home/dot_config/kits/` to see all available kits and their Brewfiles.
+Browse `home/dot_config/kits/` to see all available kits and their Brewfile.formula / Brewfile.casks.
 
 ## Creating a new kit
 
-1. **Create the directory and Brewfile:**
+**Kit names:** Use hyphens only (e.g. `php-dev`, `python-dev`). Never underscores. The directory name under `dot_config/kits/` and the config key in `[data.kits]` must match exactly.
+
+1. **Create the directory and Brewfiles:**
    ```bash
-   mkdir -p home/dot_config/kits/mykit
-   touch home/dot_config/kits/mykit/Brewfile
+   mkdir -p home/dot_config/kits/my-kit
+   touch home/dot_config/kits/my-kit/Brewfile.formula   # formulae (strict)
+   touch home/dot_config/kits/my-kit/Brewfile.casks    # casks (best-effort), optional
    ```
+   Use one or both. Formulae go in `Brewfile.formula`, casks in `Brewfile.casks`. Kits can have only formulae, only casks, or both.
 
-2. **Add packages to the Brewfile** (see `.cursor/rules.md` for format standards):
+2. **Add packages** (see `.cursor/rules.md` for format standards). Put `brew` and `mas` in Brewfile.formula; put `cask` in Brewfile.casks:
    ```ruby
-   # My Kit
-   #
-   # Description of what this kit provides.
-
+   # Brewfile.formula
    brew "package-name"                    # Brief description
+
+   # Brewfile.casks
    cask "app-name"                        # Brief description
    ```
 
 3. **Add a prompt to `.chezmoi.toml.tmpl`:**
    ```
-   {{- $kits_mykit := promptBoolOnce . "kits.mykit" "Enable mykit?" false -}}
+   {{- $kits_mykit := promptBoolOnce . "kits.my-kit" "Enable my-kit?" false -}}
    
-   # In the [data.kits] section:
+   # In the [data.kits] section (use quoted key if name has hyphen):
    [data.kits]
-     mykit = {{ $kits_mykit }}
+     "my-kit" = {{ $kits_mykit }}
    ```
 
 4. **Optional: Add post-install config** (use `.tmpl` for chezmoi templating):
    ```bash
-   touch home/dot_config/kits/mykit/setup.sh.tmpl
+   touch home/dot_config/kits/my-kit/setup.sh.tmpl
    ```
 
 The orchestrator discovers it automatically. No code changes needed.
@@ -74,6 +77,6 @@ The orchestrator discovers it automatically. No code changes needed.
 
 **Keep kits focused.** A kit should represent a capability (dev tools, security stack) not a random collection of packages.
 
-**Use Brewfiles for packages.** Only use `setup.sh.tmpl` for configuration that can't be expressed declaratively (system settings, manual install documentation, etc.).
+**Use Brewfile.formula and Brewfile.casks for packages.** Only use `setup.sh.tmpl` for configuration that can't be expressed declaratively (system settings, manual install documentation, etc.).
 
 **Follow the format standards.** See `.cursor/rules.md` for Brewfile and setup.sh.tmpl templates.

@@ -1,13 +1,7 @@
-# Productivity Kit
+# Productivity Kit – Casks
 #
 # Browsers, communication, task management, and writing tools.
 # Use case: Personal and work laptops.
-
-# ===================================================================
-# Dependencies
-# ===================================================================
-
-brew "mas"                             # Mac App Store CLI
 
 # ===================================================================
 # Browsers
@@ -57,16 +51,6 @@ cask "vlc"                             # Media player
 # ===================================================================
 
 cask "claude"                          # Anthropic AI assistant
-
-# ===================================================================
-# Mac App Store
-# ===================================================================
-
-mas "Amphetamine", id: 937984704       # Prevent sleep
-mas "Keynote", id: 409183694           # Presentations
-mas "Numbers", id: 409203825           # Spreadsheets
-mas "Pages", id: 409201541             # Word processing
-mas "Things 3", id: 904280696          # Task manager
 
 # ===================================================================
 # Microsoft Office (Personal machines only)
