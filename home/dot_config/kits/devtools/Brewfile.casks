@@ -4,10 +4,10 @@
 # Use case: Machines where you write code.
 
 # ===================================================================
-# Languages & Runtimes
+# Browsers
 # ===================================================================
 
-cask "herd"                            # PHP runtime + local dev environment
+cask "firefox-developer-edition"       # Firefox for developers
 
 # ===================================================================
 # Terminals

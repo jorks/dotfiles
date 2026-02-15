@@ -7,10 +7,9 @@
 # Browsers
 # ===================================================================
 
-cask "firefox"                         # Mozilla browser
-cask "firefox-developer-edition"       # Firefox for developers
 cask "google-chrome"                   # Google browser
-cask "microsoft-edge"                  # Microsoft browser
+# cask "firefox"                         # Mozilla browser
+# cask "microsoft-edge"                  # Microsoft browser
 
 # ===================================================================
 # Communication
