@@ -25,6 +25,7 @@ cask "font-playfair-display"           # Elegant headers
 # Coding Fonts
 # ===================================================================
 
+cask "font-inconsolata"                # Inconsolata font
 cask "font-cascadia-code"              # Microsoft's coding font, ligatures
 cask "font-fira-code"                  # Popular ligature support
 cask "font-jetbrains-mono"             # JetBrains coding font

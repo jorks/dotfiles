@@ -7,7 +7,7 @@
 # Python Runtimes
 # ===================================================================
 
-brew "python@3.12"                     # Primary Python version
+# brew "python@3.12"                     # Primary Python version
 
 # ===================================================================
 # Package Management
