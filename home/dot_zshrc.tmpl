@@ -76,3 +76,17 @@ unsetopt correct     # disable aggressive typo correction
 setopt extendedglob  # advanced globbing
 setopt noclobber     # prevent accidental file overwrite with >
 setopt notify        # report status of background jobs immediately
+
+# -------------------------------------------------------------------
+# Volta (Node.js toolchain manager)
+# -------------------------------------------------------------------
+
+{{- if eq .chezmoi.os "darwin" }}
+
+export VOLTA_HOME="$HOME/.volta"
+
+if [[ ":$PATH:" != *":$VOLTA_HOME/bin:"* ]]; then
+  export PATH="$VOLTA_HOME/bin:$PATH"
+fi
+
+{{- end }}
