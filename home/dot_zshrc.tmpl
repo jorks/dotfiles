@@ -85,8 +85,6 @@ setopt notify        # report status of background jobs immediately
 
 export VOLTA_HOME="$HOME/.volta"
 
-if [[ ":$PATH:" != *":$VOLTA_HOME/bin:"* ]]; then
-  export PATH="$VOLTA_HOME/bin:$PATH"
-fi
+export PATH="$VOLTA_HOME/bin:${PATH//$VOLTA_HOME\/bin:/}"
 
 {{- end }}
